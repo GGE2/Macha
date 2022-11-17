@@ -2,9 +2,8 @@ package com.example.final_pjt.dto
 
 class Room (
     var roomId:String,
-    var roomName:String,
+    var roomTitle:String,
+    var roomPersonnel:Int,
         ){
-    override fun toString(): String {
-        return "Room(roomId='$roomId', roomName='$roomName')"
-    }
+
 }

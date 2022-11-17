@@ -36,15 +36,13 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-
         auth = FirebaseAuth.getInstance()
-        init()
-        //기존 로그인 이력이 있었던 사람은 바로 Main으로 이동
-        if(auth!=null){
+        if(auth?.currentUser!=null){
             var intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
         }
+        init()
+        //기존 로그인 이력이 있었던 사람은 바로 Main으로 이동
     }
 
 
@@ -99,6 +97,9 @@ class LoginActivity : AppCompatActivity() {
                 firebaseAuthWithGoogle(account)
                 handleSignInReuslt(taskData)
             }
+            else{
+                Log.d(TAG, ":fail ")
+            }
         }
     }
 
@@ -130,7 +131,9 @@ class LoginActivity : AppCompatActivity() {
         addOnCompleteListener {
                 it->
             if(it.isSuccessful){
-                //Login Success
+                Log.d(TAG, "firebaseAuthWithGoogle: ")
+                var intent = Intent(this, MainActivity::class.java)
+                startActivity(intent)
             }
             else {
                 //Show the error message

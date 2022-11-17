@@ -1,5 +1,6 @@
 package com.example.final_pjt.activity
 
+import android.content.Intent
 import android.graphics.Rect
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -29,6 +30,13 @@ class MainActivity : AppCompatActivity() {
     }
     private fun setAdapter(){
         roomAdapter = RoomAdapter(list)
+        roomAdapter.setOnRoomClickListener(object :RoomAdapter.OnRoomClickListener {
+            override fun onRoomClickListener(view: View, position: Int) {
+                var intent = Intent(this@MainActivity,RoomActivity::class.java)
+                startActivity(intent)
+            }
+
+        })
         binding.recyclerMainRoom.apply {
             adapter = roomAdapter
             layoutManager = LinearLayoutManager(this@MainActivity,LinearLayoutManager.VERTICAL,false)

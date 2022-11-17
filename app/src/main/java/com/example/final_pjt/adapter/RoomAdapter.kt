@@ -10,12 +10,15 @@ import com.example.final_pjt.dto.Room
 
 class RoomAdapter(var rooms : List<Room>) : RecyclerView.Adapter<RoomAdapter.RoomHolder>(){
     private lateinit var binding : ItemRoomBinding
-
+    private lateinit var roomClickListener:OnRoomClickListener
     inner class RoomHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
         fun bindData(room:Room){
             binding.roomItemTvTitle.text = room.roomTitle
             binding.roomItemTvPerson.text = "${room.roomPersonnel}/4"
             binding.roomItemBtnSetting.text = "입장순"
+            binding.roomItemBtnEnter.setOnClickListener {
+                roomClickListener.onRoomClickListener(it,layoutPosition)
+            }
         }
 
     }
@@ -35,6 +38,12 @@ class RoomAdapter(var rooms : List<Room>) : RecyclerView.Adapter<RoomAdapter.Roo
 
     override fun getItemCount(): Int {
         return rooms.size
+    }
+    interface OnRoomClickListener{
+        fun onRoomClickListener(view:View,position: Int)
+    }
+    fun setOnRoomClickListener(roomClickListener: OnRoomClickListener){
+        this.roomClickListener = roomClickListener
     }
     inner class VerticalSpaceItemDecoration(private val verticalSpaceHeight:Int):
             RecyclerView.ItemDecoration(){

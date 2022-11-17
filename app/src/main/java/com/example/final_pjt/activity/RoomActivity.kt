@@ -35,7 +35,7 @@ class RoomActivity : AppCompatActivity() {
             builder.setPositiveButton("확인") { dialog, _ -> dialog?.cancel() }.show()
         }
         val auth = FirebaseAuth.getInstance()
-        binding.roomChatRecyclerView.adapter = ChatAdapter(listOf(Message(auth.currentUser?.uid ?: "", "테스트"), Message("other", "상대 테스트")))
+        binding.roomChatRecyclerView.adapter = ChatAdapter(listOf())
         binding.roomChatRecyclerView.layoutManager = LinearLayoutManager(this)
         stompClient.topic("/sub/chat/room/77f1be64-aecc-44a0-8f5b-46eac642fa20").subscribe{
             topicMessage ->
@@ -72,5 +72,10 @@ class RoomActivity : AppCompatActivity() {
             data.put("roomId", "77f1be64-aecc-44a0-8f5b-46eac642fa20")
             stompClient.send("/pub/chat/message", data.toString()).subscribe()
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        stompClient.disconnect()
     }
 }

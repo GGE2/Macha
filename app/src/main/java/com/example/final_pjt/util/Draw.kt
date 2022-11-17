@@ -48,6 +48,7 @@ class Draw : View {
             MotionEvent.ACTION_UP -> {
                 right = event.x
                 bottom = event.y
+                list.add(Point(event.x, event.y, true, currentColor, currentWidth))
             }
         }
         invalidate()

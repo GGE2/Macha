@@ -1,4 +1,4 @@
-package com.example.final_pjt
+package com.example.final_pjt.util
 
 import android.content.Context
 import android.graphics.Canvas

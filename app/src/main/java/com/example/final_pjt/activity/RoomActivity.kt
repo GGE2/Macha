@@ -1,4 +1,4 @@
-package com.example.final_pjt
+package com.example.final_pjt.activity
 
 import android.content.DialogInterface
 import androidx.appcompat.app.AppCompatActivity

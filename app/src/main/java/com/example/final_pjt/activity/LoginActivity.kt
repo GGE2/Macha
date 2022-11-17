@@ -1,4 +1,4 @@
-package com.example.final_pjt
+package com.example.final_pjt.activity
 
 import android.app.Activity
 import android.content.Intent
@@ -6,8 +6,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
-import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import com.example.final_pjt.R
 import com.example.final_pjt.databinding.ActivityLoginBinding
 import com.example.final_pjt.dto.User
 import com.example.final_pjt.service.UserService
@@ -36,10 +36,17 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        auth = FirebaseAuth.getInstance()
 
+
+        auth = FirebaseAuth.getInstance()
         init()
+        //기존 로그인 이력이 있었던 사람은 바로 Main으로 이동
+        if(auth!=null){
+            var intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+        }
     }
+
 
 
     /**

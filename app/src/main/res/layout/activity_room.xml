@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".RoomActivity" >
+    tools:context=".activity.RoomActivity" >
 
     <Button
         android:id="@+id/room_start_button"
@@ -30,7 +30,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.example.final_pjt.Draw
+    <com.example.final_pjt.util.Draw
         android:id="@+id/draw"
         android:layout_width="0dp"
         android:layout_height="0dp"

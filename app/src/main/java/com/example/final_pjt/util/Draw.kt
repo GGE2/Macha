@@ -40,6 +40,7 @@ class Draw : View {
             MotionEvent.ACTION_DOWN -> {
                 left = event.x
                 top = event.y
+                list.add(Point(event.x, event.y, false, currentColor, currentWidth))
             }
             MotionEvent.ACTION_MOVE -> {
                 list.add(Point(event.x, event.y, true, currentColor, currentWidth))

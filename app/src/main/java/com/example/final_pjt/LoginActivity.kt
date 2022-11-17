@@ -149,4 +149,11 @@ class LoginActivity : AppCompatActivity() {
         })
     }
 
+    /**
+     * 구글 계정 로그아웃
+     */
+    fun logout(){
+        FirebaseAuth.getInstance().signOut()
+    }
+
 }

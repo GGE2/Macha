@@ -2,5 +2,6 @@
 <resources>
     <array name="preloaded_fonts" translatable="false">
         <item>@font/do_hyeon</item>
+        <item>@font/nanum_pen_script</item>
     </array>
 </resources>

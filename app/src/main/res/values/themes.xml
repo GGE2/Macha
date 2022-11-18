@@ -14,7 +14,9 @@
         <!-- Customize your theme here. -->
         <item name="android:windowFullscreen">true</item>
 
+    </style>
 
-
+    <style name="AlertDialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
     </style>
 </resources>

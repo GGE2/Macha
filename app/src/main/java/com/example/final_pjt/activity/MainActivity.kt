@@ -27,14 +27,13 @@ import com.example.final_pjt.dto.Room
 import com.example.final_pjt.dto.User
 import com.example.final_pjt.service.UserService
 import com.example.final_pjt.util.ApplicationClass
-import com.example.final_pjt.util.ConfirmDialog
 import com.google.firebase.auth.FirebaseAuth
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 private const val TAG = "MainActivity_싸피"
-class MainActivity : AppCompatActivity(),ConfirmDialog.ConfirmDialogInterface{
+class MainActivity : AppCompatActivity(){
     private lateinit var binding : ActivityMainBinding
     private lateinit var roomAdapter: RoomAdapter
     var user: User? = null
@@ -145,11 +144,6 @@ class MainActivity : AppCompatActivity(),ConfirmDialog.ConfirmDialogInterface{
                 Log.d(TAG, "onFailure: : ${t.message}}")
             }
         })
-    }
-
-    override fun onYesButtonClick() {
-        var intent = Intent(this,RoomActivity::class.java)
-        startActivity(intent)
     }
 
 }

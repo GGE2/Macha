@@ -1,6 +1,8 @@
 package com.example.final_pjt.activity
 
 import android.content.DialogInterface
+import android.graphics.Color
+import android.graphics.Paint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -72,6 +74,19 @@ class RoomActivity : AppCompatActivity() {
             data.put("roomId", "e5b5b82f-bef5-491f-808c-d67d8cbfffd6")
             stompClient.send("/pub/chat/message", data.toString()).subscribe()
             binding.roomChatEditText.text.clear()
+        }
+        binding.drawClearAll.setOnClickListener {
+            binding.draw.clear()
+        }
+        binding.drawPencil.setOnClickListener {
+            binding.draw.currentColor = Color.BLACK
+            binding.draw.currentWidth = 10F
+            binding.draw.paint.strokeCap = Paint.Cap.BUTT
+        }
+        binding.drawEraser.setOnClickListener {
+            binding.draw.currentColor = Color.WHITE
+            binding.draw.currentWidth = 50F
+            binding.draw.paint.strokeCap = Paint.Cap.ROUND
         }
     }
 

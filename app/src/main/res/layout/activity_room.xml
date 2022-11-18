@@ -240,4 +240,34 @@
             android:layout_weight="1"
             android:text="전송" />
     </LinearLayout>
+
+    <ImageView
+        android:id="@+id/draw_clear_all"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/room_user_layout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/ic_baseline_delete_24" />
+
+    <ImageView
+        android:id="@+id/draw_pencil"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/room_user_layout"
+        app:layout_constraintStart_toEndOf="@+id/draw_clear_all"
+        app:srcCompat="@drawable/ic_baseline_create_24" />
+
+    <ImageView
+        android:id="@+id/draw_eraser"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/room_user_layout"
+        app:layout_constraintStart_toEndOf="@+id/draw_pencil"
+        app:srcCompat="@drawable/eraser" />
 </androidx.constraintlayout.widget.ConstraintLayout>

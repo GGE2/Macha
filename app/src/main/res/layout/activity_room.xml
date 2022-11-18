@@ -270,4 +270,48 @@
         app:layout_constraintBottom_toTopOf="@+id/room_user_layout"
         app:layout_constraintStart_toEndOf="@+id/draw_pencil"
         app:srcCompat="@drawable/eraser" />
+
+    <ImageView
+        android:id="@+id/draw_color_black"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/room_user_layout"
+        app:layout_constraintEnd_toStartOf="@+id/draw_color_red"
+        app:srcCompat="@color/black" />
+
+    <ImageView
+        android:id="@+id/draw_color_red"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/room_user_layout"
+        app:layout_constraintEnd_toStartOf="@+id/draw_color_green"
+        app:srcCompat="@color/red" />
+
+    <ImageView
+        android:id="@+id/draw_color_green"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/room_user_layout"
+        app:layout_constraintEnd_toStartOf="@+id/draw_color_blue"
+        app:srcCompat="@color/green" />
+
+    <ImageView
+        android:id="@+id/draw_color_blue"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/room_user_layout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@color/blue" />
 </androidx.constraintlayout.widget.ConstraintLayout>

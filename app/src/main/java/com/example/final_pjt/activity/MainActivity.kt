@@ -40,6 +40,7 @@ private const val TAG = "MainActivity_싸피"
 class MainActivity : AppCompatActivity(){
     private lateinit var binding : ActivityMainBinding
     private lateinit var roomAdapter: RoomAdapter
+    var rooms = listOf<RoomDetail>()
     var user: User? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -82,6 +83,7 @@ class MainActivity : AppCompatActivity(){
         roomAdapter.setOnRoomClickListener(object :RoomAdapter.OnRoomClickListener {
             override fun onRoomClickListener(view: View, position: Int) {
                 var intent = Intent(this@MainActivity,RoomActivity::class.java)
+                intent.putExtra("roomId",rooms.get(position).roomId)
                 startActivity(intent)
             }
         })
@@ -136,6 +138,7 @@ class MainActivity : AppCompatActivity(){
                 response: Response<List<RoomDetail>>
             ) {
                 roomAdapter.rooms = response.body()!!
+                rooms = response.body()!!
                 roomAdapter.notifyDataSetChanged()
                 Log.d(TAG, "onResponse: ${response.body()}")
             }
@@ -172,17 +175,16 @@ class MainActivity : AppCompatActivity(){
             service.createRoom(room).enqueue(object : Callback<RoomDetail>{
                 override fun onResponse(call: Call<RoomDetail>, response: Response<RoomDetail>) {
                     if(response.isSuccessful){
-                        Log.d(TAG, "onResponse: ${response.body().toString()}")
+                        var intent = Intent(this@MainActivity,RoomActivity::class.java)
+                        intent.putExtra("roomId",response.body()!!.roomId)
+                        startActivity(intent)
+                        alertDialog.dismiss()
                     }
                 }
                 override fun onFailure(call: Call<RoomDetail>, t: Throwable) {
                     Log.d(TAG, "onFailure: ${t.message}")
                 }
             })
-
-            var intent = Intent(this@MainActivity,RoomActivity::class.java)
-            startActivity(intent)
-            alertDialog.dismiss()
         }
 
         alertDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))

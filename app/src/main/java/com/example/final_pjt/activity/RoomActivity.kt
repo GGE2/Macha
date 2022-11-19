@@ -29,10 +29,12 @@ class RoomActivity : AppCompatActivity() {
     private var list: MutableList<Message> = mutableListOf()
     private val url = "ws://13.209.5.95:8080/stomp/chat/websocket"
     private val stompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP, url)
+    var roomId = -1
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityRoomBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        roomId = intent.getIntExtra("roomId",-1)
         binding.roomStartButton.setOnClickListener {
             val builder = AlertDialog.Builder(this)
             val dialogBinding = DialogGameEndBinding.inflate(builder.create().layoutInflater)
@@ -42,7 +44,7 @@ class RoomActivity : AppCompatActivity() {
         val auth = FirebaseAuth.getInstance()
         binding.roomChatRecyclerView.adapter = ChatAdapter(listOf())
         binding.roomChatRecyclerView.layoutManager = LinearLayoutManager(this)
-        stompClient.topic("/sub/chat/room/dc78e414-2775-4ae2-9d51-96002c3319ee").subscribe{
+        stompClient.topic("/sub/chat/room/${roomId}").subscribe{
             topicMessage ->
             Log.d(TAG, "onCreate: ${topicMessage.payload}")
             val message = Gson().fromJson(topicMessage.payload, Message::class.java)
@@ -80,7 +82,7 @@ class RoomActivity : AppCompatActivity() {
             userJson.put("userId", -1)
             userJson.put("isOnline", 1)
             data.put("user", userJson)
-            data.put("roomId", "dc78e414-2775-4ae2-9d51-96002c3319ee")
+            data.put("roomId", "${roomId}")
             stompClient.send("/pub/chat/message", data.toString()).subscribe()
             binding.roomChatEditText.text.clear()
         }

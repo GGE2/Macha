@@ -6,6 +6,7 @@ import android.graphics.Paint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.final_pjt.adapter.ChatAdapter
@@ -77,16 +78,40 @@ class RoomActivity : AppCompatActivity() {
         }
         binding.drawClearAll.setOnClickListener {
             binding.draw.clear()
+            binding.drawColorBlack.visibility = View.GONE
+            binding.drawColorRed.visibility = View.GONE
+            binding.drawColorGreen.visibility = View.GONE
+            binding.drawColorBlue.visibility = View.GONE
         }
         binding.drawPencil.setOnClickListener {
             binding.draw.currentColor = Color.BLACK
             binding.draw.currentWidth = 10F
             binding.draw.paint.strokeCap = Paint.Cap.BUTT
+            binding.drawColorBlack.visibility = View.VISIBLE
+            binding.drawColorRed.visibility = View.VISIBLE
+            binding.drawColorGreen.visibility = View.VISIBLE
+            binding.drawColorBlue.visibility = View.VISIBLE
         }
         binding.drawEraser.setOnClickListener {
             binding.draw.currentColor = Color.WHITE
             binding.draw.currentWidth = 50F
             binding.draw.paint.strokeCap = Paint.Cap.ROUND
+            binding.drawColorBlack.visibility = View.GONE
+            binding.drawColorRed.visibility = View.GONE
+            binding.drawColorGreen.visibility = View.GONE
+            binding.drawColorBlue.visibility = View.GONE
+        }
+        binding.drawColorBlack.setOnClickListener {
+            binding.draw.currentColor = Color.BLACK
+        }
+        binding.drawColorRed.setOnClickListener {
+            binding.draw.currentColor = Color.RED
+        }
+        binding.drawColorGreen.setOnClickListener {
+            binding.draw.currentColor = Color.GREEN
+        }
+        binding.drawColorBlue.setOnClickListener {
+            binding.draw.currentColor = Color.BLUE
         }
     }
 

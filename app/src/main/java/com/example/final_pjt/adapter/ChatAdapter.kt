@@ -12,7 +12,7 @@ class ChatAdapter(var list : List<Message>) : RecyclerView.Adapter<ChatAdapter.C
     inner class ChatHolder(val binding: ItemChatBinding) : RecyclerView.ViewHolder(binding.root){
         fun bind(message: Message){
             val auth = FirebaseAuth.getInstance()
-            if(message.userToken.equals(auth.currentUser?.uid)){
+            if(message.user.userToken.equals(auth.currentUser?.uid)){
                 binding.chatOtherLayout.visibility = View.GONE
                 binding.chatMyMsg.text = message.text
             } else {

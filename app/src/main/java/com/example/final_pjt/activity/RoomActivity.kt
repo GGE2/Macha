@@ -13,10 +13,12 @@ import com.example.final_pjt.adapter.ChatAdapter
 import com.example.final_pjt.databinding.ActivityRoomBinding
 import com.example.final_pjt.databinding.DialogGameEndBinding
 import com.example.final_pjt.dto.Message
+import com.example.final_pjt.dto.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.gson.Gson
 import com.google.gson.JsonParser
 import org.json.JSONObject
+import org.json.JSONStringer
 import ua.naiksoftware.stomp.Stomp
 import ua.naiksoftware.stomp.dto.LifecycleEvent
 
@@ -40,7 +42,7 @@ class RoomActivity : AppCompatActivity() {
         val auth = FirebaseAuth.getInstance()
         binding.roomChatRecyclerView.adapter = ChatAdapter(listOf())
         binding.roomChatRecyclerView.layoutManager = LinearLayoutManager(this)
-        stompClient.topic("/sub/chat/room/e5b5b82f-bef5-491f-808c-d67d8cbfffd6").subscribe{
+        stompClient.topic("/sub/chat/room/dc78e414-2775-4ae2-9d51-96002c3319ee").subscribe{
             topicMessage ->
             Log.d(TAG, "onCreate: ${topicMessage.payload}")
             val message = Gson().fromJson(topicMessage.payload, Message::class.java)
@@ -71,8 +73,14 @@ class RoomActivity : AppCompatActivity() {
         binding.roomChatSendButton.setOnClickListener {
             val data = JSONObject()
             data.put("message", binding.roomChatEditText.text.toString())
-            data.put("writer", auth.currentUser?.uid)
-            data.put("roomId", "e5b5b82f-bef5-491f-808c-d67d8cbfffd6")
+            val userJson = JSONObject()
+            userJson.put("userToken", auth.currentUser?.uid)
+            userJson.put("nickname", auth?.currentUser?.displayName!!)
+            userJson.put("profileImg", auth.currentUser?.photoUrl!!.toString())
+            userJson.put("userId", -1)
+            userJson.put("isOnline", 1)
+            data.put("user", userJson)
+            data.put("roomId", "dc78e414-2775-4ae2-9d51-96002c3319ee")
             stompClient.send("/pub/chat/message", data.toString()).subscribe()
             binding.roomChatEditText.text.clear()
         }

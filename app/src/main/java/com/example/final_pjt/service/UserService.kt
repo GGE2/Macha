@@ -9,6 +9,6 @@ import retrofit2.http.Path
 
 interface UserService {
     @POST("rest/user/login")
-    fun insertUser(@Body user:User): Call<Unit>
+    fun insertUser(@Body user:User): Call<User>
 
 }

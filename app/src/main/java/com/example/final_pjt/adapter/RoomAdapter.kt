@@ -7,14 +7,15 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.final_pjt.databinding.ItemRoomBinding
 import com.example.final_pjt.dto.Room
+import com.example.final_pjt.dto.RoomDetail
 
-class RoomAdapter(var rooms : List<Room>) : RecyclerView.Adapter<RoomAdapter.RoomHolder>(){
+class RoomAdapter(var rooms : List<RoomDetail>) : RecyclerView.Adapter<RoomAdapter.RoomHolder>(){
     private lateinit var binding : ItemRoomBinding
     private lateinit var roomClickListener:OnRoomClickListener
     inner class RoomHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
-        fun bindData(room:Room){
-            binding.roomItemTvTitle.text = room.roomTitle
-            binding.roomItemTvPerson.text = "${room.roomPersonnel}/4"
+        fun bindData(room:RoomDetail){
+            binding.roomItemTvTitle.text = room.roomName
+            binding.roomItemTvPerson.text = "${room.numOfPeople}/${room.maxNumOfPeople}"
             binding.roomItemBtnSetting.text = "입장순"
             binding.roomItemBtnEnter.setOnClickListener {
                 roomClickListener.onRoomClickListener(it,layoutPosition)
@@ -31,8 +32,6 @@ class RoomAdapter(var rooms : List<Room>) : RecyclerView.Adapter<RoomAdapter.Roo
 
     override fun onBindViewHolder(holder: RoomHolder, position: Int) {
         holder.bindData(rooms[position])
-
-
 
     }
 

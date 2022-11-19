@@ -129,6 +129,7 @@ class LoginActivity : AppCompatActivity() {
             val nickName = account?.displayName.toString()
             var user = User(token,nickName,photoUrl)
             userData = user
+            Log.d(TAG, "handleSignInReuslt: ${userData.toString()}")
 
         }catch (e : ApiException){
             Log.d(TAG, "handleSignInReuslt: ${e.message}")

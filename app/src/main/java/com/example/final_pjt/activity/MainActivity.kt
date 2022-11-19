@@ -15,6 +15,7 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.WindowManager
+import android.widget.EditText
 import androidx.appcompat.widget.AppCompatButton
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.databinding.BindingAdapter
@@ -24,20 +25,22 @@ import com.example.final_pjt.R
 import com.example.final_pjt.adapter.RoomAdapter
 import com.example.final_pjt.databinding.ActivityMainBinding
 import com.example.final_pjt.dto.Room
+import com.example.final_pjt.dto.RoomDetail
 import com.example.final_pjt.dto.User
+import com.example.final_pjt.service.RoomService
 import com.example.final_pjt.service.UserService
 import com.example.final_pjt.util.ApplicationClass
 import com.google.firebase.auth.FirebaseAuth
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-
+import retrofit2.create
+import com.example.final_pjt.util.ApplicationClass.Companion.sharedPreferencesUtil
 private const val TAG = "MainActivity_싸피"
 class MainActivity : AppCompatActivity(){
     private lateinit var binding : ActivityMainBinding
     private lateinit var roomAdapter: RoomAdapter
     var user: User? = null
-    var list = mutableListOf<Room>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -46,42 +49,16 @@ class MainActivity : AppCompatActivity(){
         binding.btnMainCreateRoom.setOnClickListener {
             showDialog()
         }
+        binding.btnMainRefresh.setOnClickListener {
+            getRooms()
+        }
     }
 
     private fun init(){
         initLoginUser()
         temp()
         setAdapter()
-    }
 
-    fun showDialog(){
-        var builder = AlertDialog.Builder(this, androidx.appcompat.R.style.AlertDialog_AppCompat)
-        var view = LayoutInflater.from(this).inflate(R.layout.dialog_create_room,findViewById(R.id.create_dialog))
-        builder.setView(view)
-
-        val alertDialog = builder.create()
-        val display = (getSystemService(Context.WINDOW_SERVICE) as WindowManager).defaultDisplay
-        var point = Point()
-        display.getSize(point)
-
-        var pointWidth = (point.x * 0.8).toInt()
-        var pointHeight = (point.y * 0.4).toInt()
-
-        view.findViewById<AppCompatButton>(R.id.alert_cancle_btn).setOnClickListener {
-            alertDialog.dismiss()
-        }
-        view.findViewById<AppCompatButton>(R.id.alert_ok_btn).setOnClickListener {
-            var intent = Intent(this@MainActivity,RoomActivity::class.java)
-            startActivity(intent)
-            alertDialog.dismiss()
-        }
-
-        alertDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        alertDialog.window!!.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
-        alertDialog.setCancelable(false)
-        alertDialog.window!!.attributes.width = pointWidth
-        alertDialog.window!!.attributes.height = pointHeight
-        alertDialog.show()
     }
     private fun initLoginUser(){
         var flag = intent.getIntExtra("flag",-1)
@@ -94,8 +71,14 @@ class MainActivity : AppCompatActivity(){
             }
         }
     }
+
+    override fun onResume() {
+        super.onResume()
+        getRooms()
+    }
+
     private fun setAdapter(){
-        roomAdapter = RoomAdapter(list)
+        roomAdapter = RoomAdapter(listOf<RoomDetail>())
         roomAdapter.setOnRoomClickListener(object :RoomAdapter.OnRoomClickListener {
             override fun onRoomClickListener(view: View, position: Int) {
                 var intent = Intent(this@MainActivity,RoomActivity::class.java)
@@ -110,10 +93,7 @@ class MainActivity : AppCompatActivity(){
     }
 
     private fun temp(){
-        list.add(Room("1","아무나 들어와라",2))
-        list.add(Room("2","한번 붙자",1))
-        list.add(Room("3","내 그림 맞춰볼래?",1))
-        list.add(Room("2","내 그림 맞히면 천재!",1))
+
     }
 
     //RecyclerView 간격 조절
@@ -133,17 +113,85 @@ class MainActivity : AppCompatActivity(){
      */
     private fun insertUser(user : User){
         val service = ApplicationClass.retrofit.create(UserService::class.java)
-        service.insertUser(user).enqueue(object : Callback<Unit> {
-            override fun onResponse(call: Call<Unit>, response: Response<Unit>) {
+        service.insertUser(user).enqueue(object : Callback<User>{
+            override fun onResponse(call: Call<User>, response: Response<User>) {
                 if(response.isSuccessful){
-                    if(user.userToken!=null)
-                        Log.d(TAG, "onResponse: 유저 정보 통신 완료")
+                    Log.d(TAG, "onResponse: 유저 정보 통신완료${response.body()!!.toString()}")
+                    sharedPreferencesUtil.putUser(response.body()!!)
+                    Log.d(TAG, "onResponse: test")
                 }
             }
-            override fun onFailure(call: Call<Unit>, t: Throwable) {
-                Log.d(TAG, "onFailure: : ${t.message}}")
+
+            override fun onFailure(call: Call<User>, t: Throwable) {
+                Log.d(TAG, "onFailure: ${t.message}")
             }
+
         })
     }
+    private fun getRooms(){
+        val service = ApplicationClass.retrofit.create(RoomService::class.java)
+        service.getRooms().enqueue(object : Callback<List<RoomDetail>>{
+            override fun onResponse(
+                call: Call<List<RoomDetail>>,
+                response: Response<List<RoomDetail>>
+            ) {
+                roomAdapter.rooms = response.body()!!
+                roomAdapter.notifyDataSetChanged()
+                Log.d(TAG, "onResponse: ${response.body()}")
+            }
+
+            override fun onFailure(call: Call<List<RoomDetail>>, t: Throwable) {
+                Log.d(TAG, "onFailure: ${t.message}")
+            }
+
+        })
+    }
+    fun showDialog(){
+        var builder = AlertDialog.Builder(this, androidx.appcompat.R.style.AlertDialog_AppCompat)
+        var view = LayoutInflater.from(this).inflate(R.layout.dialog_create_room,findViewById(R.id.create_dialog))
+        builder.setView(view)
+        val alertDialog = builder.create()
+        val display = (getSystemService(Context.WINDOW_SERVICE) as WindowManager).defaultDisplay
+        var point = Point()
+        display.getSize(point)
+
+        var pointWidth = (point.x * 0.8).toInt()
+        var pointHeight = (point.y * 0.4).toInt()
+
+        var roomName = view.findViewById<EditText>(R.id.alert_edit_title)
+
+        view.findViewById<AppCompatButton>(R.id.alert_cancle_btn).setOnClickListener {
+            alertDialog.dismiss()
+        }
+        view.findViewById<AppCompatButton>(R.id.alert_ok_btn).setOnClickListener {
+            var room = Room(sharedPreferencesUtil.getUser(),roomName.text.toString(),4,2)
+            /**
+             * 방 성시 서버에 생성 응답 요청
+             */
+            val service = ApplicationClass.retrofit.create(RoomService::class.java)
+            service.createRoom(room).enqueue(object : Callback<RoomDetail>{
+                override fun onResponse(call: Call<RoomDetail>, response: Response<RoomDetail>) {
+                    if(response.isSuccessful){
+                        Log.d(TAG, "onResponse: ${response.body().toString()}")
+                    }
+                }
+                override fun onFailure(call: Call<RoomDetail>, t: Throwable) {
+                    Log.d(TAG, "onFailure: ${t.message}")
+                }
+            })
+
+            var intent = Intent(this@MainActivity,RoomActivity::class.java)
+            startActivity(intent)
+            alertDialog.dismiss()
+        }
+
+        alertDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        alertDialog.window!!.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+        alertDialog.setCancelable(false)
+        alertDialog.window!!.attributes.width = pointWidth
+        alertDialog.window!!.attributes.height = pointHeight
+        alertDialog.show()
+    }
+
 
 }

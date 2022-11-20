@@ -26,8 +26,7 @@ class Draw : View {
     var currentWidth = 10F
     var roomId = ""
     var nowDrawer = false
-    private val url = "ws://13.209.5.95:8080/stomp/game/websocket"
-    private val stompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP, url)
+    var stompClient: StompClient? = null
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
 
     override fun draw(canvas: Canvas?) {
@@ -60,7 +59,7 @@ class Draw : View {
                     point.put("color", currentColor)
                     point.put("width", currentWidth)
                     data.put("point", point)
-                    stompClient.send("/pub/canvas/message", data.toString()).subscribe()
+                    stompClient?.send("/pub/canvas/message", data.toString())?.subscribe()
                 }
                 MotionEvent.ACTION_MOVE -> {
                     val pointWithRoomId = PointWithRoomId(roomId, Point(event.x, event.y, true, currentColor, currentWidth))
@@ -74,7 +73,7 @@ class Draw : View {
                     point.put("color", currentColor)
                     point.put("width", currentWidth)
                     data.put("point", point)
-                    stompClient.send("/pub/canvas/message", data.toString()).subscribe()
+                    stompClient?.send("/pub/canvas/message", data.toString())?.subscribe()
                 }
                 MotionEvent.ACTION_UP -> {
                     right = event.x
@@ -90,7 +89,7 @@ class Draw : View {
                     point.put("color", currentColor)
                     point.put("width", currentWidth)
                     data.put("point", point)
-                    stompClient.send("/pub/canvas/message", data.toString()).subscribe()
+                    stompClient?.send("/pub/canvas/message", data.toString())?.subscribe()
                 }
             }
             invalidate()

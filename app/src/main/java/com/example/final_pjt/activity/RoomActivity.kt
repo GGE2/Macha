@@ -62,6 +62,7 @@ class RoomActivity : AppCompatActivity() {
                     roomDetail = response.body()!!
                     runOnUiThread {
                         binding.draw.nowDrawer = roomDetail!!.nowDrawer == auth.currentUser?.uid
+                        binding.draw.stompClient = stompClient
                     }
                 }
 

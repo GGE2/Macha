@@ -1,5 +1,6 @@
 package com.ssafy.catchmind.model.dto;
 
+import com.ssafy.catchmind.model.GameStatusEnum;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.web.socket.WebSocketSession;
@@ -17,7 +18,7 @@ public class GameRoomDTO {
     String roomName;
     String nowDrawer;
     Integer numOfPeople;
-    String gameStatus;
+    GameStatusEnum status;
     Integer maxNumOfPeople;
 
     public static GameRoomDTO create(String roomName, Integer gameTime, User user, Integer maxNumOfPeople){
@@ -29,7 +30,7 @@ public class GameRoomDTO {
         room.numOfPeople = 1;
         room.roomMaster = user.getUserToken();
         room.maxNumOfPeople = maxNumOfPeople;
-        room.gameStatus = "STATUS_READY";
+        room.setStatus(GameStatusEnum.READY);
         room.nowDrawer = user.getUserToken();
         room.setUserSet(new LinkedHashSet<>());
         room.getUserSet().add(user);

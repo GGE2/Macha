@@ -1,6 +1,8 @@
 package com.ssafy.catchmind.repository;
 
+import com.ssafy.catchmind.model.GameStatusEnum;
 import com.ssafy.catchmind.model.dto.GameRoomDTO;
+import com.ssafy.catchmind.model.dto.GameRoomRequestDTO;
 import com.ssafy.catchmind.model.dto.User;
 import org.springframework.stereotype.Repository;
 
@@ -29,10 +31,20 @@ public class GameRoomRepository {
         return gameRoomDTOMap.get(id);
     }
 
-    public GameRoomDTO createGameRoomDTO(String roomName, Integer gameTime, User user, Integer maxNumOfPeople){
-        GameRoomDTO room = GameRoomDTO.create(roomName, gameTime, user, maxNumOfPeople);
-        gameRoomDTOMap.put(room.getRoomId(), room);
+    public GameRoomDTO insertGameRoom(GameRoomRequestDTO gameRoomRequestDTO){
+        GameRoomDTO gameRoom = new GameRoomDTO();
 
-        return room;
+        gameRoom.setRoomId(UUID.randomUUID().toString());
+        gameRoom.setRoomName(gameRoomRequestDTO.getRoomName());
+        gameRoom.setGameTime(gameRoomRequestDTO.getGameTime());
+        gameRoom.setStatus(GameStatusEnum.READY);
+        gameRoom.setMaxNumOfPeople(gameRoomRequestDTO.getMaxNumOfPeople());
+        gameRoom.setNowDrawer(gameRoomRequestDTO.getUser().getUserToken());
+        gameRoom.setNumOfPeople(1);
+        gameRoom.setUserSet(new LinkedHashSet<>());
+        gameRoom.setRoomMaster(gameRoomRequestDTO.getUser().getUserToken());
+        gameRoomDTOMap.put(gameRoom.getRoomId(), gameRoom);
+
+        return gameRoom;
     }
 }

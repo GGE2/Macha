@@ -109,6 +109,18 @@ class RoomActivity : AppCompatActivity() {
         stompClient.topic("/sub/game/room/${roomId}").subscribe{
             topicMessage -> 
             roomDetail = Gson().fromJson(topicMessage.payload, RoomDetail::class.java)
+            runOnUiThread {
+                binding.draw.nowDrawer = roomDetail!!.nowDrawer == auth.currentUser?.uid
+                if(roomDetail!!.nowDrawer == auth.currentUser?.uid){
+                    binding.drawClearAll.visibility = View.VISIBLE
+                    binding.drawPencil.visibility = View.VISIBLE
+                    binding.drawEraser.visibility = View.VISIBLE
+                } else {
+                    binding.drawClearAll.visibility = View.GONE
+                    binding.drawPencil.visibility = View.GONE
+                    binding.drawEraser.visibility = View.GONE
+                }
+            }
             Log.d(TAG, "onCreate: ${topicMessage.payload}")
         }
 

@@ -62,6 +62,15 @@ class RoomActivity : AppCompatActivity() {
                     roomDetail = response.body()!!
                     runOnUiThread {
                         binding.draw.nowDrawer = roomDetail!!.nowDrawer == auth.currentUser?.uid
+                        if(roomDetail!!.nowDrawer == auth.currentUser?.uid){
+                            binding.drawClearAll.visibility = View.VISIBLE
+                            binding.drawPencil.visibility = View.VISIBLE
+                            binding.drawEraser.visibility = View.VISIBLE
+                        } else {
+                            binding.drawClearAll.visibility = View.GONE
+                            binding.drawPencil.visibility = View.GONE
+                            binding.drawEraser.visibility = View.GONE
+                        }
                         binding.draw.stompClient = stompClient
                     }
                 }
@@ -151,9 +160,7 @@ class RoomActivity : AppCompatActivity() {
         }
         binding.drawClearAll.setOnClickListener {
             binding.draw.clear()
-            val data = JSONObject()
-            data.put("roomId", roomId)
-            stompClient.send("/pub/canvas/clear", data.toString()).subscribe()
+            stompClient.send("/pub/canvas/clear", roomId).subscribe()
             binding.drawColorBlack.visibility = View.GONE
             binding.drawColorRed.visibility = View.GONE
             binding.drawColorGreen.visibility = View.GONE

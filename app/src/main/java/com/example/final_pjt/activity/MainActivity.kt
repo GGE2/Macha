@@ -16,9 +16,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.WindowManager
 import android.widget.EditText
+import androidx.activity.viewModels
 import androidx.appcompat.widget.AppCompatButton
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.databinding.BindingAdapter
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.final_pjt.R
@@ -36,10 +38,13 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.create
 import com.example.final_pjt.util.ApplicationClass.Companion.sharedPreferencesUtil
+import com.example.final_pjt.viewmodel.RoomViewModel
+
 private const val TAG = "MainActivity_싸피"
 class MainActivity : AppCompatActivity(){
     private lateinit var binding : ActivityMainBinding
     private lateinit var roomAdapter: RoomAdapter
+    private val viewModel:RoomViewModel by viewModels()
     var rooms = mutableListOf<RoomDetail>()
     var user: User? = null
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,6 +58,11 @@ class MainActivity : AppCompatActivity(){
         binding.btnMainRefresh.setOnClickListener {
             getRooms()
         }
+        viewModel.roomLiveData.observe(this, Observer {
+            Log.d(TAG, "onCreate: observe")
+            roomAdapter.rooms = it
+            roomAdapter.notifyDataSetChanged()
+        })
     }
 
     private fun init(){
@@ -71,11 +81,7 @@ class MainActivity : AppCompatActivity(){
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        Log.d(TAG, "onResume: ")
-        getRooms()
-    }
+
 
     private fun setAdapter(){
         roomAdapter = RoomAdapter(mutableListOf<RoomDetail>())
@@ -122,6 +128,13 @@ class MainActivity : AppCompatActivity(){
 
         })
     }
+
+    override fun onResume() {
+        super.onResume()
+        getRooms()
+    }
+
+
     private fun getRooms(){
         val service = ApplicationClass.retrofit.create(RoomService::class.java)
         service.getRooms().enqueue(object : Callback<MutableList<RoomDetail>>{
@@ -129,8 +142,7 @@ class MainActivity : AppCompatActivity(){
                 call: Call<MutableList<RoomDetail>>,
                 response: Response<MutableList<RoomDetail>>
             ) {
-                roomAdapter.rooms = response.body()!!
-                Log.d(TAG, "onResponse: ${response.body()}")
+                viewModel.setData(response.body()!!)
                 rooms.clear()
                 rooms = response.body()!!
                 roomAdapter.notifyDataSetChanged()
@@ -154,12 +166,13 @@ class MainActivity : AppCompatActivity(){
 
         var pointWidth = (point.x * 0.8).toInt()
         var pointHeight = (point.y * 0.4).toInt()
-
         var roomName = view.findViewById<EditText>(R.id.alert_edit_title)
+
 
         view.findViewById<AppCompatButton>(R.id.alert_cancle_btn).setOnClickListener {
             alertDialog.dismiss()
         }
+
         view.findViewById<AppCompatButton>(R.id.alert_ok_btn).setOnClickListener {
             var room = Room(sharedPreferencesUtil.getUser(),roomName.text.toString(),4,2)
             Log.d(TAG, "showDialog: ${room.toString()}")
@@ -173,6 +186,7 @@ class MainActivity : AppCompatActivity(){
                         var intent = Intent(this@MainActivity,RoomActivity::class.java)
                         intent.putExtra("roomId",response.body()!!.roomId)
                         startActivity(intent)
+                        viewModel.addRoom(response.body()!!)
                         alertDialog.dismiss()
                     }
                 }

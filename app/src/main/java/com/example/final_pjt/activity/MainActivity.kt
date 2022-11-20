@@ -84,6 +84,7 @@ class MainActivity : AppCompatActivity(){
             override fun onRoomClickListener(view: View, position: Int) {
                 var intent = Intent(this@MainActivity,RoomActivity::class.java)
                 intent.putExtra("roomId",rooms.get(position).roomId)
+                Log.d(TAG, "onRoomClickListener: ${rooms.get(position).roomId}")
                 startActivity(intent)
             }
         })
@@ -177,6 +178,7 @@ class MainActivity : AppCompatActivity(){
                     if(response.isSuccessful){
                         var intent = Intent(this@MainActivity,RoomActivity::class.java)
                         intent.putExtra("roomId",response.body()!!.roomId)
+                        Log.d(TAG, "onResponse: ${response.body()!!.roomId}")
                         startActivity(intent)
                         alertDialog.dismiss()
                     }

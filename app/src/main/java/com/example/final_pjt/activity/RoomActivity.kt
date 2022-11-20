@@ -29,12 +29,13 @@ class RoomActivity : AppCompatActivity() {
     private var list: MutableList<Message> = mutableListOf()
     private val url = "ws://13.209.5.95:8080/stomp/game/websocket"
     private val stompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP, url)
-    var roomId = -1
+    var roomId:String? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityRoomBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        roomId = intent.getIntExtra("roomId",-1)
+        roomId = intent.getStringExtra("roomId")
+        Log.d(TAG, "onCreate: ${roomId}")
         binding.roomStartButton.setOnClickListener {
             val builder = AlertDialog.Builder(this)
             val dialogBinding = DialogGameEndBinding.inflate(builder.create().layoutInflater)
@@ -51,7 +52,7 @@ class RoomActivity : AppCompatActivity() {
         data.put("roomId", roomId);
         val userJson = JSONObject()
         userJson.put("userToken", auth.currentUser?.uid)
-        userJson.put("nickname", auth?.currentUser?.displayName!!)
+        userJson.put("nickname", auth.currentUser?.displayName!!)
         userJson.put("profileImg", auth.currentUser?.photoUrl!!.toString())
         userJson.put("userId", -1)
         userJson.put("isOnline", 1)

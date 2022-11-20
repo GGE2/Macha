@@ -8,11 +8,12 @@ import android.graphics.RectF
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
+import com.example.final_pjt.dto.Point
+import com.example.final_pjt.dto.PointWithRoomId
 
-data class Point(var x:Float, var y:Float, var isContinue:Boolean, var color: Int, var width: Float)
 
 class Draw : View {
-    var list = arrayListOf<Point>()
+    var list = arrayListOf<PointWithRoomId>()
     var left = 0F
     var top = 0F
     var right = 0F
@@ -24,12 +25,12 @@ class Draw : View {
 
     override fun draw(canvas: Canvas?) {
         super.draw(canvas)
-        list.forEachIndexed { index, point ->
+        list.forEachIndexed { index, pointWithRoomId ->
             if(index > 0){
-                if(point.isContinue){
-                    paint.color = point.color
-                    paint.strokeWidth = point.width
-                    canvas!!.drawLine(list[index-1].x, list[index-1].y, point.x, point.y, paint)
+                if(pointWithRoomId.point.isContinue){
+                    paint.color = pointWithRoomId.point.color
+                    paint.strokeWidth = pointWithRoomId.point.width
+                    canvas!!.drawLine(list[index-1].point.x, list[index-1].point.y, pointWithRoomId.point.x, pointWithRoomId.point.y, paint)
                 }
             }
         }
@@ -40,15 +41,15 @@ class Draw : View {
             MotionEvent.ACTION_DOWN -> {
                 left = event.x
                 top = event.y
-                list.add(Point(event.x, event.y, false, currentColor, currentWidth))
+                list.add(PointWithRoomId("", Point(event.x, event.y, false, currentColor, currentWidth)))
             }
             MotionEvent.ACTION_MOVE -> {
-                list.add(Point(event.x, event.y, true, currentColor, currentWidth))
+                list.add(PointWithRoomId("", Point(event.x, event.y, true, currentColor, currentWidth)))
             }
             MotionEvent.ACTION_UP -> {
                 right = event.x
                 bottom = event.y
-                list.add(Point(event.x, event.y, true, currentColor, currentWidth))
+                list.add(PointWithRoomId("", Point(event.x, event.y, true, currentColor, currentWidth)))
             }
         }
         invalidate()

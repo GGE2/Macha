@@ -6,6 +6,7 @@ import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Path
 
 interface RoomService {
 
@@ -13,5 +14,7 @@ interface RoomService {
     fun createRoom(@Body room: Room) : Call<RoomDetail>
     @GET("game/rooms")
     fun getRooms() : Call<MutableList<RoomDetail>>
+    @GET("game/{roomId}")
+    fun getRoomDetail(@Path("roomId") roomId: String) : Call<RoomDetail>
 
 }

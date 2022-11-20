@@ -13,6 +13,7 @@ import com.example.final_pjt.adapter.ChatAdapter
 import com.example.final_pjt.databinding.ActivityRoomBinding
 import com.example.final_pjt.databinding.DialogGameEndBinding
 import com.example.final_pjt.dto.Message
+import com.example.final_pjt.dto.RoomDetail
 import com.example.final_pjt.dto.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.gson.Gson
@@ -29,6 +30,7 @@ class RoomActivity : AppCompatActivity() {
     private var list: MutableList<Message> = mutableListOf()
     private val url = "ws://13.209.5.95:8080/stomp/game/websocket"
     private val stompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP, url)
+    private var roomDetail: RoomDetail? = null
     var roomId:String? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,6 +71,12 @@ class RoomActivity : AppCompatActivity() {
             runOnUiThread {
                 binding.roomChatRecyclerView.adapter = ChatAdapter(list.toList())
             }
+        }
+
+        stompClient.topic("/sub/game/room/${roomId}").subscribe{
+            topicMessage -> 
+            roomDetail = Gson().fromJson(topicMessage.payload, RoomDetail::class.java)
+            Log.d(TAG, "onCreate: ${topicMessage.payload}")
         }
 
         stompClient.lifecycle().subscribe { lifecycleEvent ->

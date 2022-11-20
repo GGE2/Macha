@@ -12,6 +12,6 @@ interface RoomService {
     @POST("game/room")
     fun createRoom(@Body room: Room) : Call<RoomDetail>
     @GET("game/rooms")
-    fun getRooms() : Call<List<RoomDetail>>
+    fun getRooms() : Call<MutableList<RoomDetail>>
 
 }

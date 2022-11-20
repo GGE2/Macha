@@ -58,7 +58,8 @@ class RoomActivity : AppCompatActivity() {
         userJson.put("isOnline", 1)
         data.put("user", userJson)
         data.put("roomId", "${roomId}")
-        stompClient.send("/pub/game/enter", data.toString())
+        stompClient.send("/pub/game/enter", data.toString()).subscribe()
+        stompClient.send("/pub/chat/enter", data.toString()).subscribe()
 
         stompClient.topic("/sub/chat/room/${roomId}").subscribe{
                 topicMessage ->

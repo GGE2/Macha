@@ -19,15 +19,20 @@ public class UserController {
     @PostMapping("/login")
     @ApiOperation(value = "로그인 처리후 성공적으로 로그인 되었다면 HTTP STATUS CODE : 200", response = ResponseEntity.class)
     public ResponseEntity<?> login(@RequestBody User user) {
+
+        if (user.getUserToken().equals("null"))
+            return new ResponseEntity<>(false, HttpStatus.OK);
+
         User selected = userService.login(user.getUserToken());
-
         System.out.println(user);
-        if (selected == null)
-            userService.insert(user);
-        else
-            return new ResponseEntity<>(true, HttpStatus.OK);
 
-        return new ResponseEntity<>(true, HttpStatus.OK);
+        // 아직 회원가입 안된 경우
+        if (selected == null) {
+            userService.insert(user);
+            selected = userService.login(user.getUserToken());
+        }
+
+        return new ResponseEntity<>(selected, HttpStatus.OK);
     }
 
     @GetMapping("/test")

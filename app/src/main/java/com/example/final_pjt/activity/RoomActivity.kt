@@ -27,7 +27,7 @@ private const val TAG = "RoomActivity_싸피"
 class RoomActivity : AppCompatActivity() {
     private lateinit var binding: ActivityRoomBinding
     private var list: MutableList<Message> = mutableListOf()
-    private val url = "ws://13.209.5.95:8080/stomp/chat/websocket"
+    private val url = "ws://13.209.5.95:8080/stomp/game/websocket"
     private val stompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP, url)
     var roomId = -1
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,8 +44,23 @@ class RoomActivity : AppCompatActivity() {
         val auth = FirebaseAuth.getInstance()
         binding.roomChatRecyclerView.adapter = ChatAdapter(listOf())
         binding.roomChatRecyclerView.layoutManager = LinearLayoutManager(this)
+
+        stompClient.connect()
+
+        val data = JSONObject()
+        data.put("roomId", roomId);
+        val userJson = JSONObject()
+        userJson.put("userToken", auth.currentUser?.uid)
+        userJson.put("nickname", auth?.currentUser?.displayName!!)
+        userJson.put("profileImg", auth.currentUser?.photoUrl!!.toString())
+        userJson.put("userId", -1)
+        userJson.put("isOnline", 1)
+        data.put("user", userJson)
+        data.put("roomId", "${roomId}")
+        stompClient.send("/pub/game/enter", data.toString())
+
         stompClient.topic("/sub/chat/room/${roomId}").subscribe{
-            topicMessage ->
+                topicMessage ->
             Log.d(TAG, "onCreate: ${topicMessage.payload}")
             val message = Gson().fromJson(topicMessage.payload, Message::class.java)
             list.add(message)
@@ -53,7 +68,7 @@ class RoomActivity : AppCompatActivity() {
                 binding.roomChatRecyclerView.adapter = ChatAdapter(list.toList())
             }
         }
-        stompClient.connect()
+
         stompClient.lifecycle().subscribe { lifecycleEvent ->
             when (lifecycleEvent.type) {
                 LifecycleEvent.Type.OPENED -> {

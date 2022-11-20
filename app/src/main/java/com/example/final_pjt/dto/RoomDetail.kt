@@ -10,9 +10,8 @@ data class RoomDetail(
     var numOfPeople : Int,
     var gameStatus : String,
     var maxNumOfPeople : Int,
-    var sessions : List<String>
 ):java.io.Serializable{
     override fun toString(): String {
-        return "RoomDetail(userSet=$userSet, roomId='$roomId', roomMaster='$roomMaster', roomName='$roomName', nowDrawer='$nowDrawer', numOfPeople=$numOfPeople, gameStatus='$gameStatus', maxNumOfPerople=$maxNumOfPeople, sessions=$sessions)"
+        return "RoomDetail(userSet=$userSet, roomId='$roomId', roomMaster='$roomMaster', roomName='$roomName', nowDrawer='$nowDrawer', numOfPeople=$numOfPeople, gameStatus='$gameStatus', maxNumOfPerople=$maxNumOfPeople)"
     }
 }

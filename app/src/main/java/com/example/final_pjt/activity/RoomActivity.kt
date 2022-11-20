@@ -13,13 +13,19 @@ import com.example.final_pjt.adapter.ChatAdapter
 import com.example.final_pjt.databinding.ActivityRoomBinding
 import com.example.final_pjt.databinding.DialogGameEndBinding
 import com.example.final_pjt.dto.Message
+import com.example.final_pjt.dto.PointWithRoomId
 import com.example.final_pjt.dto.RoomDetail
 import com.example.final_pjt.dto.User
+import com.example.final_pjt.service.RoomService
+import com.example.final_pjt.util.ApplicationClass
 import com.google.firebase.auth.FirebaseAuth
 import com.google.gson.Gson
 import com.google.gson.JsonParser
 import org.json.JSONObject
 import org.json.JSONStringer
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import ua.naiksoftware.stomp.Stomp
 import ua.naiksoftware.stomp.dto.LifecycleEvent
 
@@ -38,6 +44,7 @@ class RoomActivity : AppCompatActivity() {
         setContentView(binding.root)
         roomId = intent.getStringExtra("roomId")
         Log.d(TAG, "onCreate: ${roomId}")
+        binding.draw.roomId = roomId!!
         binding.roomStartButton.setOnClickListener {
             val builder = AlertDialog.Builder(this)
             val dialogBinding = DialogGameEndBinding.inflate(builder.create().layoutInflater)
@@ -47,6 +54,22 @@ class RoomActivity : AppCompatActivity() {
         val auth = FirebaseAuth.getInstance()
         binding.roomChatRecyclerView.adapter = ChatAdapter(listOf())
         binding.roomChatRecyclerView.layoutManager = LinearLayoutManager(this)
+
+        ApplicationClass.retrofit.create(RoomService::class.java).getRoomDetail(roomId!!).enqueue(
+            object : Callback<RoomDetail>{
+                override fun onResponse(call: Call<RoomDetail>, response: Response<RoomDetail>) {
+                    Log.d(TAG, "onResponse: ${response.body()}")
+                    roomDetail = response.body()!!
+                    runOnUiThread {
+                        binding.draw.nowDrawer = roomDetail!!.nowDrawer == auth.currentUser?.uid
+                    }
+                }
+
+                override fun onFailure(call: Call<RoomDetail>, t: Throwable) {
+                    Log.d(TAG, "onFailure: ${t.message}")
+                }
+            }
+        )
 
         stompClient.connect()
 
@@ -77,6 +100,13 @@ class RoomActivity : AppCompatActivity() {
             topicMessage -> 
             roomDetail = Gson().fromJson(topicMessage.payload, RoomDetail::class.java)
             Log.d(TAG, "onCreate: ${topicMessage.payload}")
+        }
+
+        stompClient.topic("/sub/canvas/room/${roomId}").subscribe{
+            topicMessage ->
+            runOnUiThread {
+                binding.draw.addPoint(Gson().fromJson(topicMessage.payload, PointWithRoomId::class.java))
+            }
         }
 
         stompClient.lifecycle().subscribe { lifecycleEvent ->

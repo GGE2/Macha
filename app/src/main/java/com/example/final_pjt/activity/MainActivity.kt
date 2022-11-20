@@ -40,7 +40,7 @@ private const val TAG = "MainActivity_싸피"
 class MainActivity : AppCompatActivity(){
     private lateinit var binding : ActivityMainBinding
     private lateinit var roomAdapter: RoomAdapter
-    var rooms = listOf<RoomDetail>()
+    var rooms = mutableListOf<RoomDetail>()
     var user: User? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,7 +57,6 @@ class MainActivity : AppCompatActivity(){
 
     private fun init(){
         initLoginUser()
-        temp()
         setAdapter()
 
     }
@@ -68,23 +67,22 @@ class MainActivity : AppCompatActivity(){
             user!!.userToken = FirebaseAuth.getInstance().uid.toString()
             if(user!!.userToken!=null) {
                 insertUser(user!!)
-                Log.d(TAG, "initLoginUser: ${user.toString()}")
             }
         }
     }
 
     override fun onResume() {
         super.onResume()
+        Log.d(TAG, "onResume: ")
         getRooms()
     }
 
     private fun setAdapter(){
-        roomAdapter = RoomAdapter(listOf<RoomDetail>())
+        roomAdapter = RoomAdapter(mutableListOf<RoomDetail>())
         roomAdapter.setOnRoomClickListener(object :RoomAdapter.OnRoomClickListener {
             override fun onRoomClickListener(view: View, position: Int) {
                 var intent = Intent(this@MainActivity,RoomActivity::class.java)
                 intent.putExtra("roomId",rooms.get(position).roomId)
-                Log.d(TAG, "onRoomClickListener: ${rooms.get(position).roomId}")
                 startActivity(intent)
             }
         })
@@ -94,11 +92,6 @@ class MainActivity : AppCompatActivity(){
             addItemDecoration(VerticalSpaceItemDecoration(20))
         }
     }
-
-    private fun temp(){
-
-    }
-
     //RecyclerView 간격 조절
     inner class VerticalSpaceItemDecoration(private val verticalSpaceHeight:Int):
         RecyclerView.ItemDecoration(){
@@ -119,9 +112,7 @@ class MainActivity : AppCompatActivity(){
         service.insertUser(user).enqueue(object : Callback<User>{
             override fun onResponse(call: Call<User>, response: Response<User>) {
                 if(response.isSuccessful){
-                    Log.d(TAG, "onResponse: 유저 정보 통신완료${response.body()!!.toString()}")
                     sharedPreferencesUtil.putUser(response.body()!!)
-                    Log.d(TAG, "onResponse: test")
                 }
             }
 
@@ -133,22 +124,24 @@ class MainActivity : AppCompatActivity(){
     }
     private fun getRooms(){
         val service = ApplicationClass.retrofit.create(RoomService::class.java)
-        service.getRooms().enqueue(object : Callback<List<RoomDetail>>{
+        service.getRooms().enqueue(object : Callback<MutableList<RoomDetail>>{
             override fun onResponse(
-                call: Call<List<RoomDetail>>,
-                response: Response<List<RoomDetail>>
+                call: Call<MutableList<RoomDetail>>,
+                response: Response<MutableList<RoomDetail>>
             ) {
                 roomAdapter.rooms = response.body()!!
+                Log.d(TAG, "onResponse: ${response.body()}")
+                rooms.clear()
                 rooms = response.body()!!
                 roomAdapter.notifyDataSetChanged()
-                Log.d(TAG, "onResponse: ${response.body()}")
             }
 
-            override fun onFailure(call: Call<List<RoomDetail>>, t: Throwable) {
+            override fun onFailure(call: Call<MutableList<RoomDetail>>, t: Throwable) {
                 Log.d(TAG, "onFailure: ${t.message}")
             }
 
         })
+
     }
     fun showDialog(){
         var builder = AlertDialog.Builder(this, androidx.appcompat.R.style.AlertDialog_AppCompat)
@@ -169,6 +162,7 @@ class MainActivity : AppCompatActivity(){
         }
         view.findViewById<AppCompatButton>(R.id.alert_ok_btn).setOnClickListener {
             var room = Room(sharedPreferencesUtil.getUser(),roomName.text.toString(),4,2)
+            Log.d(TAG, "showDialog: ${room.toString()}")
             /**
              * 방 성시 서버에 생성 응답 요청
              */
@@ -178,7 +172,6 @@ class MainActivity : AppCompatActivity(){
                     if(response.isSuccessful){
                         var intent = Intent(this@MainActivity,RoomActivity::class.java)
                         intent.putExtra("roomId",response.body()!!.roomId)
-                        Log.d(TAG, "onResponse: ${response.body()!!.roomId}")
                         startActivity(intent)
                         alertDialog.dismiss()
                     }

@@ -9,30 +9,27 @@ import com.example.final_pjt.databinding.ItemRoomBinding
 import com.example.final_pjt.dto.Room
 import com.example.final_pjt.dto.RoomDetail
 
-class RoomAdapter(var rooms : List<RoomDetail>) : RecyclerView.Adapter<RoomAdapter.RoomHolder>(){
+class RoomAdapter(var rooms : MutableList<RoomDetail>) : RecyclerView.Adapter<RoomAdapter.RoomHolder>(){
     private lateinit var binding : ItemRoomBinding
     private lateinit var roomClickListener:OnRoomClickListener
     inner class RoomHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
         fun bindData(room:RoomDetail){
-            binding.roomItemTvTitle.text = room.roomName
+            binding.roomItemTvTitle.text = room.roomName.toString()
             binding.roomItemTvPerson.text = "${room.numOfPeople}/${room.maxNumOfPeople}"
             binding.roomItemBtnSetting.text = "입장순"
             binding.roomItemBtnEnter.setOnClickListener {
                 roomClickListener.onRoomClickListener(it,layoutPosition)
             }
         }
-
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RoomHolder {
         binding = ItemRoomBinding.inflate(LayoutInflater.from(parent.context),parent,false)
-
         return RoomHolder(binding.root)
     }
 
     override fun onBindViewHolder(holder: RoomHolder, position: Int) {
         holder.bindData(rooms[position])
-
     }
 
     override fun getItemCount(): Int {

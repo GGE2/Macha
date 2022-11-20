@@ -6,5 +6,7 @@ class Room (
     var gameTime : Int,
     var maxNumOfPeople:Int,
         ){
-
+    override fun toString(): String {
+        return "Room(user=$user, roomName='$roomName', gameTime=$gameTime, maxNumOfPeople=$maxNumOfPeople)"
+    }
 }

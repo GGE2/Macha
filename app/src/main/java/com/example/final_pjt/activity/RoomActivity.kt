@@ -110,6 +110,13 @@ class RoomActivity : AppCompatActivity() {
             }
         }
 
+        stompClient.topic("/sub/canvas/clear/${roomId}").subscribe{
+                topicMessage ->
+            runOnUiThread {
+                binding.draw.clear()
+            }
+        }
+
         stompClient.lifecycle().subscribe { lifecycleEvent ->
             when (lifecycleEvent.type) {
                 LifecycleEvent.Type.OPENED -> {
@@ -144,6 +151,9 @@ class RoomActivity : AppCompatActivity() {
         }
         binding.drawClearAll.setOnClickListener {
             binding.draw.clear()
+            val data = JSONObject()
+            data.put("roomId", roomId)
+            stompClient.send("/pub/canvas/clear", data.toString()).subscribe()
             binding.drawColorBlack.visibility = View.GONE
             binding.drawColorRed.visibility = View.GONE
             binding.drawColorGreen.visibility = View.GONE

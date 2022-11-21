@@ -8,7 +8,9 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.final_pjt.adapter.ChatAdapter
@@ -32,6 +34,7 @@ import retrofit2.Response
 import ua.naiksoftware.stomp.Stomp
 import ua.naiksoftware.stomp.dto.LifecycleEvent
 import com.example.final_pjt.util.ApplicationClass.Companion.sharedPreferencesUtil
+import com.example.final_pjt.viewmodel.RoomViewModel
 import java.util.Collections.emptyList
 
 private const val TAG = "RoomActivity_싸피"
@@ -44,6 +47,7 @@ class RoomActivity : AppCompatActivity() {
     private val stompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP, url)
     private val userDataWithRoomId = JSONObject()
     private var roomDetail: RoomDetail? = null
+    private var roomList = listOf<RoomDetail>()
     var roomId:String? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,7 +55,6 @@ class RoomActivity : AppCompatActivity() {
         setContentView(binding.root)
         roomId = intent.getStringExtra("roomId")
         Log.d(TAG, "onCreate: ${roomId}")
-
         userAdapter = UserAdapter(emptyList())
         binding.roomUserRecyclerView.apply{
             adapter = userAdapter

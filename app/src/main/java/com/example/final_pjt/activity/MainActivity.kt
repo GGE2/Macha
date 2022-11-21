@@ -45,7 +45,7 @@ private const val TAG = "MainActivity_싸피"
 class MainActivity : AppCompatActivity(){
     private lateinit var binding : ActivityMainBinding
     private lateinit var roomAdapter: RoomAdapter
-    private val viewModel:RoomViewModel by viewModels()
+    val viewModel:RoomViewModel by viewModels()
     var rooms = mutableListOf<RoomDetail>()
     var user: User? = null
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,6 +53,7 @@ class MainActivity : AppCompatActivity(){
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         init()
+        getRooms()
         binding.btnMainCreateRoom.setOnClickListener {
             showDialog()
         }
@@ -71,6 +72,9 @@ class MainActivity : AppCompatActivity(){
         setAdapter()
 
     }
+
+
+
     private fun initLoginUser(){
         var flag = intent.getIntExtra("flag",-1)
         if(flag==2) {
@@ -81,8 +85,6 @@ class MainActivity : AppCompatActivity(){
             }
         }
     }
-
-
 
     private fun setAdapter(){
         roomAdapter = RoomAdapter(mutableListOf<RoomDetail>())
@@ -133,10 +135,6 @@ class MainActivity : AppCompatActivity(){
         })
     }
 
-    override fun onResume() {
-        super.onResume()
-        getRooms()
-    }
 
 
     private fun getRooms(){

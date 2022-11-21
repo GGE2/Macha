@@ -55,33 +55,7 @@ class RoomActivity : AppCompatActivity() {
         val auth = FirebaseAuth.getInstance()
         binding.roomChatRecyclerView.adapter = ChatAdapter(listOf())
         binding.roomChatRecyclerView.layoutManager = LinearLayoutManager(this)
-
-        ApplicationClass.retrofit.create(RoomService::class.java).getRoomDetail(roomId!!).enqueue(
-            object : Callback<RoomDetail>{
-                override fun onResponse(call: Call<RoomDetail>, response: Response<RoomDetail>) {
-                    Log.d(TAG, "onResponse: ${response.body()}")
-                    roomDetail = response.body()!!
-                    runOnUiThread {
-                        binding.draw.nowDrawer = roomDetail!!.nowDrawer == auth.currentUser?.uid
-                        if(roomDetail!!.nowDrawer == auth.currentUser?.uid){
-                            binding.drawClearAll.visibility = View.VISIBLE
-                            binding.drawPencil.visibility = View.VISIBLE
-                            binding.drawEraser.visibility = View.VISIBLE
-                        } else {
-                            binding.drawClearAll.visibility = View.GONE
-                            binding.drawPencil.visibility = View.GONE
-                            binding.drawEraser.visibility = View.GONE
-                        }
-                        binding.draw.stompClient = stompClient
-                    }
-                }
-
-                override fun onFailure(call: Call<RoomDetail>, t: Throwable) {
-                    Log.d(TAG, "onFailure: ${t.message}")
-                }
-            }
-        )
-
+        
         stompClient.connect()
 
         val data = JSONObject()
@@ -95,8 +69,6 @@ class RoomActivity : AppCompatActivity() {
         userJson.put("isOnline", 1)
         data.put("user", userJson)
         data.put("roomId", "${roomId}")
-        stompClient.send("/pub/game/enter", data.toString()).subscribe()
-        stompClient.send("/pub/chat/enter", data.toString()).subscribe()
 
         stompClient.topic("/sub/chat/room/${roomId}").subscribe{
                 topicMessage ->
@@ -109,7 +81,7 @@ class RoomActivity : AppCompatActivity() {
         }
 
         stompClient.topic("/sub/game/room/${roomId}").subscribe{
-            topicMessage -> 
+            topicMessage ->
             roomDetail = Gson().fromJson(topicMessage.payload, RoomDetail::class.java)
             runOnUiThread {
                 binding.draw.nowDrawer = roomDetail!!.nowDrawer == auth.currentUser?.uid
@@ -158,6 +130,8 @@ class RoomActivity : AppCompatActivity() {
                 }
             }
         }
+        stompClient.send("/pub/game/enter", data.toString()).subscribe()
+        stompClient.send("/pub/chat/enter", data.toString()).subscribe()
         binding.roomChatSendButton.setOnClickListener {
             val data = JSONObject()
             data.put("message", binding.roomChatEditText.text.toString())

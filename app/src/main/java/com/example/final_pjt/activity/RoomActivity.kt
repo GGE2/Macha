@@ -65,7 +65,7 @@ class RoomActivity : AppCompatActivity() {
         binding.draw.roomId = roomId!!
         binding.roomStartButton.setOnClickListener {
             binding.roomStartButton.visibility = View.GONE
-            stompClient.send("/pub/game/round-start", roomId)
+            stompClient.send("/pub/game/round-start", roomId).subscribe()
         }
         val auth = FirebaseAuth.getInstance()
         binding.roomChatRecyclerView.adapter = ChatAdapter(listOf())

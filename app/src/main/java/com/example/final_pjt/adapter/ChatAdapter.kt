@@ -18,6 +18,7 @@ class ChatAdapter(var list : List<Message>) : RecyclerView.Adapter<ChatAdapter.C
             } else {
                 binding.chatMyLayout.visibility = View.GONE
                 binding.chatOtherMsg.text = message.text
+                binding.chatOtherNickName.text = message.user.nickname.toString()
             }
         }
     }

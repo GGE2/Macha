@@ -96,6 +96,7 @@ class RoomActivity : AppCompatActivity() {
                 }
             }
             Log.d(TAG, "onCreate: ${topicMessage.payload}")
+            Log.d(TAG, "onCreate: $roomDetail")
         }
 
         stompClient.topic("/sub/canvas-room/${roomId}").subscribe{
@@ -187,7 +188,7 @@ class RoomActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-//        stompClient.send("/pub/game/exit", userDataWithRoomId.toString()).subscribe()
+        stompClient.send("/pub/room/exit", userDataWithRoomId.toString()).subscribe()
         stompClient.disconnect()
     }
 }

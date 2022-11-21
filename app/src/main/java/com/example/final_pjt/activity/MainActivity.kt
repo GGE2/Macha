@@ -118,7 +118,10 @@ class MainActivity : AppCompatActivity(){
         service.insertUser(user).enqueue(object : Callback<User>{
             override fun onResponse(call: Call<User>, response: Response<User>) {
                 if(response.isSuccessful){
-                    sharedPreferencesUtil.putUser(response.body()!!)
+                    if(response.body()!!.userId!=null) {
+                        sharedPreferencesUtil.putUser(response.body()!!)
+                        Log.d(TAG, "onResponse: ${response.body()!!.toString()}")
+                    }
                 }
             }
 

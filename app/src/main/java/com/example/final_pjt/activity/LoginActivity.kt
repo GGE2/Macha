@@ -127,7 +127,7 @@ class LoginActivity : AppCompatActivity() {
             val token = auth?.uid.toString()
             val photoUrl = account?.photoUrl.toString()
             val nickName = account?.displayName.toString()
-            var user = User(token,nickName,photoUrl)
+            var user = User(token,photoUrl,nickName)
             userData = user
             Log.d(TAG, "handleSignInReuslt: ${userData.toString()}")
 

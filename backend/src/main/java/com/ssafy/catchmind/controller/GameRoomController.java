@@ -1,8 +1,7 @@
 package com.ssafy.catchmind.controller;
 
 import com.ssafy.catchmind.model.dto.GameRoomRequestDTO;
-import com.ssafy.catchmind.model.service.GameService;
-import com.ssafy.catchmind.model.service.GameServiceImpl;
+import com.ssafy.catchmind.model.service.RoomService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 public class GameRoomController {
 
     @Autowired
-    private final GameService gameService;
+    private final RoomService roomService;
 
     //게임방 목록 조회
     @GetMapping(value = "/rooms")
@@ -25,7 +24,7 @@ public class GameRoomController {
 
         log.info("# All Chat Rooms");;
 
-        return new ResponseEntity<>(gameService.findAllGameRooms(), HttpStatus.OK);
+        return new ResponseEntity<>(roomService.findAllGameRooms(), HttpStatus.OK);
     }
 
     //게임방 개설
@@ -33,7 +32,7 @@ public class GameRoomController {
     public ResponseEntity<?> create(@RequestBody GameRoomRequestDTO roomRequestDTO){
 
         log.info("# Create Chat Room , name: " + roomRequestDTO.getUser().getNickname());
-        return new ResponseEntity<>(gameService.createGameRoom(roomRequestDTO), HttpStatus.OK);
+        return new ResponseEntity<>(roomService.createGameRoom(roomRequestDTO), HttpStatus.OK);
     }
 
     //게임방 조회
@@ -42,6 +41,6 @@ public class GameRoomController {
 
         log.info("# get Chat Room, roomID : " + roomId);
 
-        return new ResponseEntity<>(gameService.findByRoomId(roomId), HttpStatus.OK);
+        return new ResponseEntity<>(roomService.findByRoomId(roomId), HttpStatus.OK);
     }
 }

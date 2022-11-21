@@ -27,7 +27,7 @@ public class StompCanvasController {
         System.out.println(canvasInfoDTO.getRoomId() + " " + canvasInfoDTO.getPoint());
         //GameRoomDTO gameRoomDTO = gameRoomController.getRoom(message.getRoomId());
         //gameRoomDTO.
-        template.convertAndSend("/sub/canvas/room/" + canvasInfoDTO.getRoomId(), canvasInfoDTO);
+        template.convertAndSend("/sub/canvas-room/" + canvasInfoDTO.getRoomId(), canvasInfoDTO);
     }
 
     @MessageMapping(value = "/canvas/clear")

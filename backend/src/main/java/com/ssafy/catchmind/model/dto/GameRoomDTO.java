@@ -1,6 +1,7 @@
 package com.ssafy.catchmind.model.dto;
 
 import com.ssafy.catchmind.model.GameStatusEnum;
+import com.ssafy.catchmind.model.RoomStatusEnum;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.web.socket.WebSocketSession;
@@ -19,21 +20,28 @@ public class GameRoomDTO {
     String nowDrawer;
     Integer numOfPeople;
     GameStatusEnum status;
+    RoomStatusEnum roomStatus;
     Integer maxNumOfPeople;
+    Integer roundCnt;
+    String answer;
+    HashMap<String, Integer> scoreMap;
 
-    public static GameRoomDTO create(String roomName, Integer gameTime, User user, Integer maxNumOfPeople){
-        GameRoomDTO room = new GameRoomDTO();
-
-        room.roomId = UUID.randomUUID().toString();
-        room.roomName = roomName;
-        room.gameTime = gameTime;
-        room.numOfPeople = 1;
-        room.roomMaster = user.getUserToken();
-        room.maxNumOfPeople = maxNumOfPeople;
-        room.setStatus(GameStatusEnum.READY);
-        room.nowDrawer = user.getUserToken();
-        room.setUserSet(new LinkedHashSet<>());
-        room.getUserSet().add(user);
-        return room;
+    @Override
+    public String toString() {
+        return "GameRoomDTO{" +
+                "userSet=" + userSet +
+                ", roomId='" + roomId + '\'' +
+                ", gameTime=" + gameTime +
+                ", roomMaster='" + roomMaster + '\'' +
+                ", roomName='" + roomName + '\'' +
+                ", nowDrawer='" + nowDrawer + '\'' +
+                ", numOfPeople=" + numOfPeople +
+                ", status=" + status +
+                ", roomStatus=" + roomStatus +
+                ", maxNumOfPeople=" + maxNumOfPeople +
+                ", roundCnt=" + roundCnt +
+                ", answer='" + answer + '\'' +
+                ", scoreMap=" + scoreMap +
+                '}';
     }
 }

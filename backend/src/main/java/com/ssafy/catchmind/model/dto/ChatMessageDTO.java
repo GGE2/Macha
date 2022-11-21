@@ -7,6 +7,9 @@ import lombok.Setter;
 @Setter
 public class ChatMessageDTO {
 
+    public ChatMessageDTO() {
+    }
+
     public ChatMessageDTO(String roomId, User user, String message) {
         this.roomId = roomId;
         this.user = user;
@@ -17,4 +20,12 @@ public class ChatMessageDTO {
     private User user;
     private String message;
 
+    @Override
+    public String toString() {
+        return "ChatMessageDTO{" +
+                "roomId='" + roomId + '\'' +
+                ", user=" + user +
+                ", message='" + message + '\'' +
+                '}';
+    }
 }

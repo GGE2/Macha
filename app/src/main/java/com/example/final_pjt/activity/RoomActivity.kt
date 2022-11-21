@@ -117,7 +117,17 @@ class RoomActivity : AppCompatActivity() {
                     if(roomDetail!!.nowDrawer == user.userToken){
                         binding.roomAnswerText.text = roomDetail!!.answer
                         binding.roomAnswerText.visibility = View.VISIBLE
+                    } else {
+                        binding.roomAnswerText.visibility = View.GONE
                     }
+                }
+                if(roomDetail!!.status == GameStatusEnum.END_GAME){
+                    showResultDialog()
+                    if(roomDetail!!.roomMaster == user.userToken){
+                        binding.roomStartButton.visibility = View.VISIBLE
+                    }
+                    binding.roomTimerText.visibility = View.GONE
+                    binding.roomAnswerText.visibility = View.GONE
                 }
                 if(roomDetail!!.roomMaster != user.userToken){
                     binding.roomStartButton.visibility = View.GONE

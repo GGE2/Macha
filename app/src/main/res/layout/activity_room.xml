@@ -73,13 +73,14 @@
             android:id="@+id/room_chat_edit_text"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:background="@drawable/alert_room_edit_btn_radius"
+            android:background="@drawable/item_edit_text"
             android:textColor="#6E6E6E"
             android:textSize="12sp"
             android:fontFamily="@font/do_hyeon"
             android:ems="10"
             android:inputType="text"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="@id/room_chat_send_button"
             app:layout_constraintRight_toLeftOf="@id/room_chat_send_button"
             app:layout_constraintLeft_toLeftOf="parent"/>
         <androidx.appcompat.widget.AppCompatButton

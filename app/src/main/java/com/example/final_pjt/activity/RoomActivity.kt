@@ -34,7 +34,7 @@ private const val TAG = "RoomActivity_싸피"
 class RoomActivity : AppCompatActivity() {
     private lateinit var binding: ActivityRoomBinding
     private var list: MutableList<Message> = mutableListOf()
-    private val url = "ws://13.209.5.95:8080/stomp/game/websocket"
+    private val url = "ws://54.180.24.155:8080/stomp/game/websocket"
     private val stompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP, url)
     private var roomDetail: RoomDetail? = null
     var roomId:String? = null

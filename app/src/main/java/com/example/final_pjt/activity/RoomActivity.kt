@@ -140,7 +140,7 @@ class RoomActivity : AppCompatActivity() {
             Log.d(TAG, "onCreate: $roomDetail")
         }
 
-        stompClient.topic("sub/game-room/end/$roomId").subscribe{
+        stompClient.topic("/sub/game-room/end/$roomId").subscribe{
             showResultDialog()
         }
 

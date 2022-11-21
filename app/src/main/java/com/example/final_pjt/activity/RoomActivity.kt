@@ -69,7 +69,7 @@ class RoomActivity : AppCompatActivity() {
         userDataWithRoomId.put("user", userJson)
         userDataWithRoomId.put("roomId", roomId);
 
-        stompClient.topic("/sub/chat/room/${roomId}").subscribe{
+        stompClient.topic("/sub/chat-room/${roomId}").subscribe{
                 topicMessage ->
             Log.d(TAG, "onCreate: ${topicMessage.payload}")
             val message = Gson().fromJson(topicMessage.payload, Message::class.java)
@@ -79,7 +79,7 @@ class RoomActivity : AppCompatActivity() {
             }
         }
 
-        stompClient.topic("/sub/game/room/${roomId}").subscribe{
+        stompClient.topic("/sub/game-room/${roomId}").subscribe{
             topicMessage ->
             roomDetail = Gson().fromJson(topicMessage.payload, RoomDetail::class.java)
             runOnUiThread {
@@ -98,7 +98,7 @@ class RoomActivity : AppCompatActivity() {
             Log.d(TAG, "onCreate: ${topicMessage.payload}")
         }
 
-        stompClient.topic("/sub/canvas/room/${roomId}").subscribe{
+        stompClient.topic("/sub/canvas-room/${roomId}").subscribe{
             topicMessage ->
             runOnUiThread {
                 binding.draw.addPoint(Gson().fromJson(topicMessage.payload, PointWithRoomId::class.java))
@@ -130,7 +130,7 @@ class RoomActivity : AppCompatActivity() {
                 }
             }
         }
-        stompClient.send("/pub/game/enter", userDataWithRoomId.toString()).subscribe()
+        stompClient.send("/pub/room/enter", userDataWithRoomId.toString()).subscribe()
         binding.roomChatSendButton.setOnClickListener {
             val data = JSONObject()
             data.put("message", binding.roomChatEditText.text.toString())

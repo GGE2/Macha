@@ -37,6 +37,7 @@ class RoomActivity : AppCompatActivity() {
     private var list: MutableList<Message> = mutableListOf()
     private val url = "ws://54.180.24.155:8080/stomp/game/websocket"
     private val stompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP, url)
+    private val userDataWithRoomId = JSONObject()
     private var roomDetail: RoomDetail? = null
     var roomId:String? = null
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,8 +59,6 @@ class RoomActivity : AppCompatActivity() {
         
         stompClient.connect()
 
-        val data = JSONObject()
-        data.put("roomId", roomId);
         val userJson = JSONObject()
         val user = sharedPreferencesUtil.getUser()
         userJson.put("userToken", auth.currentUser?.uid)
@@ -67,8 +66,8 @@ class RoomActivity : AppCompatActivity() {
         userJson.put("profileImg", auth.currentUser?.photoUrl!!.toString())
         userJson.put("userId", user.userId)
         userJson.put("isOnline", 1)
-        data.put("user", userJson)
-        data.put("roomId", "${roomId}")
+        userDataWithRoomId.put("user", userJson)
+        userDataWithRoomId.put("roomId", roomId);
 
         stompClient.topic("/sub/chat/room/${roomId}").subscribe{
                 topicMessage ->
@@ -85,6 +84,7 @@ class RoomActivity : AppCompatActivity() {
             roomDetail = Gson().fromJson(topicMessage.payload, RoomDetail::class.java)
             runOnUiThread {
                 binding.draw.nowDrawer = roomDetail!!.nowDrawer == auth.currentUser?.uid
+                binding.draw.stompClient = stompClient
                 if(roomDetail!!.nowDrawer == auth.currentUser?.uid){
                     binding.drawClearAll.visibility = View.VISIBLE
                     binding.drawPencil.visibility = View.VISIBLE
@@ -130,8 +130,7 @@ class RoomActivity : AppCompatActivity() {
                 }
             }
         }
-        stompClient.send("/pub/game/enter", data.toString()).subscribe()
-        stompClient.send("/pub/chat/enter", data.toString()).subscribe()
+        stompClient.send("/pub/game/enter", userDataWithRoomId.toString()).subscribe()
         binding.roomChatSendButton.setOnClickListener {
             val data = JSONObject()
             data.put("message", binding.roomChatEditText.text.toString())
@@ -139,7 +138,7 @@ class RoomActivity : AppCompatActivity() {
             userJson.put("userToken", auth.currentUser?.uid)
             userJson.put("nickname", auth?.currentUser?.displayName!!)
             userJson.put("profileImg", auth.currentUser?.photoUrl!!.toString())
-            userJson.put("userId", -1)
+            userJson.put("userId", user.userId)
             userJson.put("isOnline", 1)
             data.put("user", userJson)
             data.put("roomId", "${roomId}")
@@ -188,6 +187,7 @@ class RoomActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
+//        stompClient.send("/pub/game/exit", userDataWithRoomId.toString()).subscribe()
         stompClient.disconnect()
     }
 }

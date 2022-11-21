@@ -17,10 +17,7 @@ import com.example.final_pjt.adapter.ChatAdapter
 import com.example.final_pjt.adapter.UserAdapter
 import com.example.final_pjt.databinding.ActivityRoomBinding
 import com.example.final_pjt.databinding.DialogGameEndBinding
-import com.example.final_pjt.dto.Message
-import com.example.final_pjt.dto.PointWithRoomId
-import com.example.final_pjt.dto.RoomDetail
-import com.example.final_pjt.dto.User
+import com.example.final_pjt.dto.*
 import com.example.final_pjt.service.RoomService
 import com.example.final_pjt.util.ApplicationClass
 import com.google.firebase.auth.FirebaseAuth
@@ -35,6 +32,10 @@ import ua.naiksoftware.stomp.Stomp
 import ua.naiksoftware.stomp.dto.LifecycleEvent
 import com.example.final_pjt.util.ApplicationClass.Companion.sharedPreferencesUtil
 import com.example.final_pjt.viewmodel.RoomViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.util.Collections.emptyList
 
 private const val TAG = "RoomActivity_싸피"
@@ -63,10 +64,8 @@ class RoomActivity : AppCompatActivity() {
         }
         binding.draw.roomId = roomId!!
         binding.roomStartButton.setOnClickListener {
-            val builder = AlertDialog.Builder(this)
-            val dialogBinding = DialogGameEndBinding.inflate(builder.create().layoutInflater)
-            builder.setView(dialogBinding.root)
-            builder.setPositiveButton("확인") { dialog, _ -> dialog?.cancel() }.show()
+            binding.roomStartButton.visibility = View.GONE
+            stompClient.send("/pub/game/round-start", roomId)
         }
         val auth = FirebaseAuth.getInstance()
         binding.roomChatRecyclerView.adapter = ChatAdapter(listOf())
@@ -98,6 +97,31 @@ class RoomActivity : AppCompatActivity() {
             topicMessage ->
             roomDetail = Gson().fromJson(topicMessage.payload, RoomDetail::class.java)
             runOnUiThread {
+                if(roomDetail!!.status == GameStatusEnum.START_ROUND){
+                    //timer
+                    var time = roomDetail!!.gameTime
+                    binding.roomTimerText.visibility = View.VISIBLE
+                    binding.roomTimerText.text = time.toString()
+                    CoroutineScope(Dispatchers.IO).launch {
+                        while(time > 0){
+                            delay(1000)
+                            time--
+                            runOnUiThread {
+                                binding.roomTimerText.text = time.toString()
+                            }
+                        }
+                        if(roomDetail!!.nowDrawer == user.userToken){
+                            stompClient.send("/pub/game/round-end", roomId).subscribe()
+                        }
+                    }
+                    if(roomDetail!!.nowDrawer == user.userToken){
+                        binding.roomAnswerText.text = roomDetail!!.answer
+                        binding.roomAnswerText.visibility = View.VISIBLE
+                    }
+                }
+                if(roomDetail!!.roomMaster != user.userToken){
+                    binding.roomStartButton.visibility = View.GONE
+                }
                 userAdapter.users = roomDetail!!.userSet
                 userAdapter.notifyDataSetChanged()
                 binding.draw.nowDrawer = roomDetail!!.nowDrawer == auth.currentUser?.uid
@@ -114,6 +138,10 @@ class RoomActivity : AppCompatActivity() {
             }
             Log.d(TAG, "onCreate: ${topicMessage.payload}")
             Log.d(TAG, "onCreate: $roomDetail")
+        }
+
+        stompClient.topic("sub/game-room/end/$roomId").subscribe{
+            showResultDialog()
         }
 
         stompClient.topic("/sub/canvas-room/${roomId}").subscribe{
@@ -219,4 +247,10 @@ class RoomActivity : AppCompatActivity() {
             outRect.right = horizonSpaceItemDecoration
         }
             }
+    fun showResultDialog(){
+        val builder = AlertDialog.Builder(this)
+        val dialogBinding = DialogGameEndBinding.inflate(builder.create().layoutInflater)
+        builder.setView(dialogBinding.root)
+        builder.setPositiveButton("확인") { dialog, _ -> dialog?.cancel() }.show()
+    }
 }

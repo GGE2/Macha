@@ -14,7 +14,6 @@
         android:layout_marginTop="32dp"
         android:background="@drawable/alert_btn_radius"
         android:text="게임 시작"
-        android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -28,6 +27,18 @@
         android:textSize="36sp"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/room_answer_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="정답"
+        android:textSize="36sp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toStartOf="@+id/room_timer_text"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -57,7 +68,9 @@
         app:layout_constraintBottom_toTopOf="@+id/room_chat_layout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/room_user_recycler_view" />
+        app:layout_constraintTop_toBottomOf="@+id/room_user_recycler_view" >
+
+    </androidx.recyclerview.widget.RecyclerView>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/room_chat_layout"
@@ -169,4 +182,5 @@
         app:layout_constraintBottom_toTopOf="@+id/room_user_recycler_view"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@color/blue" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

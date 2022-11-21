@@ -28,6 +28,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import ua.naiksoftware.stomp.Stomp
 import ua.naiksoftware.stomp.dto.LifecycleEvent
+import com.example.final_pjt.util.ApplicationClass.Companion.sharedPreferencesUtil
 
 private const val TAG = "RoomActivity_싸피"
 
@@ -86,10 +87,11 @@ class RoomActivity : AppCompatActivity() {
         val data = JSONObject()
         data.put("roomId", roomId);
         val userJson = JSONObject()
+        val user = sharedPreferencesUtil.getUser()
         userJson.put("userToken", auth.currentUser?.uid)
         userJson.put("nickname", auth.currentUser?.displayName!!)
         userJson.put("profileImg", auth.currentUser?.photoUrl!!.toString())
-        userJson.put("userId", -1)
+        userJson.put("userId", user.userId)
         userJson.put("isOnline", 1)
         data.put("user", userJson)
         data.put("roomId", "${roomId}")

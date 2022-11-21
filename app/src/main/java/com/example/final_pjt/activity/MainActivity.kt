@@ -18,6 +18,7 @@ import android.view.WindowManager
 import android.widget.EditText
 import androidx.activity.viewModels
 import androidx.appcompat.widget.AppCompatButton
+import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.databinding.BindingAdapter
 import androidx.lifecycle.Observer
@@ -150,7 +151,6 @@ class MainActivity : AppCompatActivity(){
                 rooms = response.body()!!
                 roomAdapter.notifyDataSetChanged()
             }
-
             override fun onFailure(call: Call<MutableList<RoomDetail>>, t: Throwable) {
                 Log.d(TAG, "onFailure: ${t.message}")
             }
@@ -166,10 +166,59 @@ class MainActivity : AppCompatActivity(){
         val display = (getSystemService(Context.WINDOW_SERVICE) as WindowManager).defaultDisplay
         var point = Point()
         display.getSize(point)
-
         var pointWidth = (point.x * 0.8).toInt()
         var pointHeight = (point.y * 0.4).toInt()
         var roomName = view.findViewById<EditText>(R.id.alert_edit_title)
+
+        var people2 = view.findViewById<AppCompatCheckBox>(R.id.alert_checkbox_2)
+        var people3 = view.findViewById<AppCompatCheckBox>(R.id.alert_checkbox_3)
+        var people4 = view.findViewById<AppCompatCheckBox>(R.id.alert_checkbox_4)
+        var now_checked:AppCompatCheckBox? = null
+        people2.setOnClickListener {
+            if(now_checked==null){
+                now_checked = people2
+            }else{
+                now_checked!!.isChecked = false
+                now_checked = people2
+            }
+        }
+        people3.setOnClickListener {
+            if(now_checked==null){
+                now_checked = people3
+            }else{
+                now_checked!!.isChecked = false
+                now_checked = people3
+            }
+        }
+        people4.setOnClickListener {
+            if(now_checked==null){
+                now_checked = people4
+            }else{
+                now_checked!!.isChecked = false
+                now_checked = people4
+            }
+        }
+
+        var time1 = view.findViewById<AppCompatCheckBox>(R.id.alert_time_checkbox_1)
+        var time2 = view.findViewById<AppCompatCheckBox>(R.id.alert_time_checkbox_2)
+        var nowTime_checked:AppCompatCheckBox? = null
+
+        time1.setOnClickListener {
+            if(nowTime_checked==null){
+                nowTime_checked = time1
+            }else{
+                nowTime_checked!!.isChecked = false
+                nowTime_checked = time1
+            }
+        }
+        time2.setOnClickListener {
+            if(nowTime_checked==null){
+                nowTime_checked = time2
+            }else{
+                nowTime_checked!!.isChecked = false
+                nowTime_checked = time2
+            }
+        }
 
 
         view.findViewById<AppCompatButton>(R.id.alert_cancle_btn).setOnClickListener {
@@ -177,28 +226,33 @@ class MainActivity : AppCompatActivity(){
         }
 
         view.findViewById<AppCompatButton>(R.id.alert_ok_btn).setOnClickListener {
-            var room = Room(sharedPreferencesUtil.getUser(),roomName.text.toString(),4,2)
+            var room = Room(sharedPreferencesUtil.getUser(),roomName.text.toString(),nowTime_checked?.text!!.split("초")[0].toInt(),now_checked?.text!!.split("명")[0].toInt())
             Log.d(TAG, "showDialog: ${room.toString()}")
             /**
              * 방 성시 서버에 생성 응답 요청
              */
-            val service = ApplicationClass.retrofit.create(RoomService::class.java)
-            service.createRoom(room).enqueue(object : Callback<RoomDetail>{
-                override fun onResponse(call: Call<RoomDetail>, response: Response<RoomDetail>) {
-                    if(response.isSuccessful){
-                        var intent = Intent(this@MainActivity,RoomActivity::class.java)
-                        intent.putExtra("roomId",response.body()!!.roomId)
-                        startActivity(intent)
-                        viewModel.addRoom(response.body()!!)
-                        alertDialog.dismiss()
+            if(now_checked!=null&&nowTime_checked!=null) {
+                val service = ApplicationClass.retrofit.create(RoomService::class.java)
+                service.createRoom(room).enqueue(object : Callback<RoomDetail> {
+                    override fun onResponse(
+                        call: Call<RoomDetail>,
+                        response: Response<RoomDetail>
+                    ) {
+                        if (response.isSuccessful) {
+                            var intent = Intent(this@MainActivity, RoomActivity::class.java)
+                            intent.putExtra("roomId", response.body()!!.roomId)
+                            startActivity(intent)
+                            viewModel.addRoom(response.body()!!)
+                            alertDialog.dismiss()
+                        }
                     }
-                }
-                override fun onFailure(call: Call<RoomDetail>, t: Throwable) {
-                    Log.d(TAG, "onFailure: ${t.message}")
-                }
-            })
-        }
 
+                    override fun onFailure(call: Call<RoomDetail>, t: Throwable) {
+                        Log.d(TAG, "onFailure: ${t.message}")
+                    }
+                })
+            }
+        }
         alertDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         alertDialog.window!!.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
         alertDialog.setCancelable(false)

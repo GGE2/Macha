@@ -3,13 +3,16 @@ package com.example.final_pjt.activity
 import android.content.DialogInterface
 import android.graphics.Color
 import android.graphics.Paint
+import android.graphics.Rect
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.final_pjt.adapter.ChatAdapter
+import com.example.final_pjt.adapter.UserAdapter
 import com.example.final_pjt.databinding.ActivityRoomBinding
 import com.example.final_pjt.databinding.DialogGameEndBinding
 import com.example.final_pjt.dto.Message
@@ -29,6 +32,7 @@ import retrofit2.Response
 import ua.naiksoftware.stomp.Stomp
 import ua.naiksoftware.stomp.dto.LifecycleEvent
 import com.example.final_pjt.util.ApplicationClass.Companion.sharedPreferencesUtil
+import java.util.Collections.emptyList
 
 private const val TAG = "RoomActivity_싸피"
 
@@ -36,6 +40,7 @@ class RoomActivity : AppCompatActivity() {
     private lateinit var binding: ActivityRoomBinding
     private var list: MutableList<Message> = mutableListOf()
     private val url = "ws://54.180.24.155:8080/stomp/game/websocket"
+    private lateinit var userAdapter: UserAdapter
     private val stompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP, url)
     private val userDataWithRoomId = JSONObject()
     private var roomDetail: RoomDetail? = null
@@ -46,6 +51,13 @@ class RoomActivity : AppCompatActivity() {
         setContentView(binding.root)
         roomId = intent.getStringExtra("roomId")
         Log.d(TAG, "onCreate: ${roomId}")
+
+        userAdapter = UserAdapter(emptyList())
+        binding.roomUserRecyclerView.apply{
+            adapter = userAdapter
+            layoutManager = LinearLayoutManager(this@RoomActivity,LinearLayoutManager.HORIZONTAL,false)
+            addItemDecoration(HorizonSpaceItemDecoration(20))
+        }
         binding.draw.roomId = roomId!!
         binding.roomStartButton.setOnClickListener {
             val builder = AlertDialog.Builder(this)
@@ -83,6 +95,8 @@ class RoomActivity : AppCompatActivity() {
             topicMessage ->
             roomDetail = Gson().fromJson(topicMessage.payload, RoomDetail::class.java)
             runOnUiThread {
+                userAdapter.users = roomDetail!!.userSet
+                userAdapter.notifyDataSetChanged()
                 binding.draw.nowDrawer = roomDetail!!.nowDrawer == auth.currentUser?.uid
                 binding.draw.stompClient = stompClient
                 if(roomDetail!!.nowDrawer == auth.currentUser?.uid){
@@ -191,4 +205,15 @@ class RoomActivity : AppCompatActivity() {
         stompClient.send("/pub/room/exit", userDataWithRoomId.toString()).subscribe()
         stompClient.disconnect()
     }
+    inner class HorizonSpaceItemDecoration(private val horizonSpaceItemDecoration:Int):
+            RecyclerView.ItemDecoration(){
+        override fun getItemOffsets(
+            outRect: Rect,
+            view: View,
+            parent: RecyclerView,
+            state: RecyclerView.State
+        ) {
+            outRect.right = horizonSpaceItemDecoration
+        }
+            }
 }

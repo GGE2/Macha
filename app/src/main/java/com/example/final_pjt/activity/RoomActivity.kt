@@ -60,6 +60,7 @@ class RoomActivity : AppCompatActivity() {
     private var roomDetail: RoomDetail? = null
     private val auth = FirebaseAuth.getInstance()
     private val user = sharedPreferencesUtil.getUser()
+    private var connected = false
     var roomId:String? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -134,11 +135,30 @@ class RoomActivity : AppCompatActivity() {
         binding.drawColorBlue.setOnClickListener {
             binding.draw.currentColor = Color.BLUE
         }
+        stompClient.lifecycle().subscribe { lifecycleEvent ->
+            when (lifecycleEvent.type) {
+                LifecycleEvent.Type.OPENED -> {
+                    Log.i("OPEND", "!!")
+                }
+                LifecycleEvent.Type.CLOSED -> {
+                    Log.i("CLOSED", "!!")
+                    connected = false
+                }
+                LifecycleEvent.Type.ERROR -> {
+                    Log.i("ERROR", "!!")
+                    Log.e("CONNECT ERROR", lifecycleEvent.exception.toString())
+                    connected = false
+                }
+                else ->{
+                    Log.i("ELSE", lifecycleEvent.message)
+                }
+            }
+        }
     }
 
     override fun onResume() {
         super.onResume()
-        if(!stompClient.isConnected){
+        if(!connected){
             connectStomp()
         }
     }
@@ -255,6 +275,7 @@ class RoomActivity : AppCompatActivity() {
     }
 
     fun connectStomp(){
+        connected = true
         val userJson = JSONObject()
         userJson.put("userToken", auth.currentUser?.uid)
         userJson.put("nickname", auth.currentUser?.displayName!!)
@@ -302,6 +323,7 @@ class RoomActivity : AppCompatActivity() {
             runOnUiThread {
                 if(roomDetail!!.status == GameStatusEnum.START_ROUND){
                     binding.roomTimerText.visibility = View.VISIBLE
+                    binding.roomTimerImage.visibility = View.VISIBLE
                     if(roomDetail!!.nowDrawer == user.userToken){
                         binding.roomAnswerText.text = roomDetail!!.answer
                         binding.roomAnswerText.visibility = View.VISIBLE
@@ -313,6 +335,7 @@ class RoomActivity : AppCompatActivity() {
                     if(roomDetail!!.roomMaster == user.userToken){
                         binding.roomStartButton.visibility = View.VISIBLE
                     }
+                    binding.roomTimerImage.visibility = View.GONE
                     binding.roomTimerText.visibility = View.GONE
                     binding.roomAnswerText.visibility = View.GONE
                 }

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/error_no_room"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/alert_radius_white"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintBottom_toBottomOf="parent"
+    android:padding="20dp">
+
+    <TextView
+        android:id="@+id/error_no_room_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="존재 하지 않는 방 입니다"
+        android:textSize="22sp"
+        android:gravity="center"
+        android:fontFamily="@font/do_hyeon"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/error_no_room_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="확인"
+        android:textSize="16sp"
+        android:fontFamily="@font/do_hyeon"
+        android:background="@drawable/alert_btn_radius"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/error_no_room_tv"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>

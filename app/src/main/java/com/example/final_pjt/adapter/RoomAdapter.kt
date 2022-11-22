@@ -1,6 +1,8 @@
 package com.example.final_pjt.adapter
 
+import android.graphics.Color
 import android.graphics.Rect
+import android.graphics.drawable.ColorDrawable
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -9,19 +11,37 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.final_pjt.databinding.ItemRoomBinding
 import com.example.final_pjt.dto.Room
 import com.example.final_pjt.dto.RoomDetail
+import com.example.final_pjt.dto.RoomStatusEnum
 
 private const val TAG = "RoomAdapter_싸피"
 class RoomAdapter(var rooms : MutableList<RoomDetail>) : RecyclerView.Adapter<RoomAdapter.RoomHolder>(){
-//    private lateinit var binding : ItemRoomBinding
-    private lateinit var roomClickListener:OnRoomClickListener
+    private lateinit var roomClickListener: OnRoomClickListener
     inner class RoomHolder(var binding: ItemRoomBinding) : RecyclerView.ViewHolder(binding.root){
         fun bindData(room:RoomDetail){
-            binding.roomItemTvTitle.text = room.roomName.toString()
-            binding.roomItemTvPerson.text = "${room.numOfPeople}/${room.maxNumOfPeople}"
-            binding.roomItemBtnSetting.text = "입장순"
-            Log.d(TAG, "bindData: ${room.toString()}")
-            binding.roomItemBtnEnter.setOnClickListener {
-                roomClickListener.onRoomClickListener(it,layoutPosition)
+            if(room.numOfPeople>=room.maxNumOfPeople){
+                binding.roomItemBtnEnter.isClickable = false
+                binding.roomItemBtnSetting.text = "인원 초과"
+                binding.roomItemBack.background = ColorDrawable(Color.GRAY)
+                binding.roomItemTvTitle.text = room.roomName.toString()
+                binding.roomItemTvPerson.text = "${room.numOfPeople}/${room.maxNumOfPeople}"
+            }
+            else if(room.roomStatus==RoomStatusEnum.PROCEEDING){
+                binding.roomItemBtnEnter.isClickable = false
+                binding.roomItemBtnSetting.text = "게임중"
+                binding.roomItemBack.background = ColorDrawable(Color.GRAY)
+                binding.roomItemTvTitle.text = room.roomName.toString()
+                binding.roomItemTvPerson.text = "${room.numOfPeople}/${room.maxNumOfPeople}"
+            }
+            else{
+                Log.d(TAG, "bindData: ${123}")
+                binding.roomItemBtnEnter.isClickable = true
+                binding.roomItemBack.background = ColorDrawable(Color.WHITE)
+                binding.roomItemBtnSetting.text = "게임 대기"
+                binding.roomItemTvTitle.text = room.roomName.toString()
+                binding.roomItemTvPerson.text = "${room.numOfPeople}/${room.maxNumOfPeople}"
+                binding.roomItemBtnEnter.setOnClickListener {
+                    roomClickListener.onRoomClickListener(it,layoutPosition)
+                }
             }
         }
     }

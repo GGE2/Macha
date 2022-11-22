@@ -54,7 +54,6 @@ class MainActivity : AppCompatActivity(){
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         init()
-        getRooms()
         binding.btnMainCreateRoom.setOnClickListener {
             showDialog()
         }
@@ -72,6 +71,11 @@ class MainActivity : AppCompatActivity(){
         initLoginUser()
         setAdapter()
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+        getRooms()
     }
 
 
@@ -107,7 +111,6 @@ class MainActivity : AppCompatActivity(){
                         }
 
                     }
-
                     override fun onFailure(call: Call<RoomDetail>, t: Throwable) {
                         //통신 실패 = 방이 사라짐
                         showDialogError()
@@ -167,8 +170,8 @@ class MainActivity : AppCompatActivity(){
                 viewModel.setData(response.body()!!)
                 rooms.clear()
                 rooms = response.body()!!
-                roomAdapter.notifyDataSetChanged()
                 Log.d(TAG, "onResponse: ${response.body()!!}")
+                roomAdapter.notifyDataSetChanged()
             }
             override fun onFailure(call: Call<MutableList<RoomDetail>>, t: Throwable) {
                 Log.d(TAG, "onFailure: ${t.message}")

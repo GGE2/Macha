@@ -1,19 +1,27 @@
 package com.example.final_pjt.activity
 
+import android.content.Context
 import android.content.DialogInterface
 import android.graphics.Color
 import android.graphics.Paint
+import android.graphics.Point
 import android.graphics.Rect
+import android.graphics.drawable.ColorDrawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.WindowManager
+import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.AppCompatButton
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.final_pjt.R
 import com.example.final_pjt.adapter.ChatAdapter
 import com.example.final_pjt.adapter.UserAdapter
 import com.example.final_pjt.databinding.ActivityRoomBinding
@@ -72,9 +80,7 @@ class RoomActivity : AppCompatActivity() {
         }
         binding.roomChatRecyclerView.adapter = ChatAdapter(listOf())
         binding.roomChatRecyclerView.layoutManager = LinearLayoutManager(this)
-
         connectStomp()
-
         stompClient.send("/pub/room/enter", userDataWithRoomId.toString()).subscribe()
         binding.roomChatSendButton.setOnClickListener {
             val data = JSONObject()
@@ -139,9 +145,38 @@ class RoomActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
+        Log.d(TAG, "onDestroy: ")
         stompClient.send("/pub/room/exit", userDataWithRoomId.toString()).subscribe()
         stompClient.disconnect()
     }
+    fun showDialogError(){
+        var builder = android.app.AlertDialog.Builder(this, androidx.appcompat.R.style.AlertDialog_AppCompat)
+        var view = LayoutInflater.from(this).inflate(
+            R.layout.dialog_enter_room_error_no_room,findViewById(
+                R.id.error_no_room))
+        builder.setView(view)
+        view.findViewById<TextView>(R.id.error_no_room_tv).text = "방장이 방을 나갔습니다."
+        val alertDialog = builder.create()
+        val display = (getSystemService(Context.WINDOW_SERVICE) as WindowManager).defaultDisplay
+        var point = Point()
+        display.getSize(point)
+        var pointWidth = (point.x * 0.7).toInt()
+        var pointHeight = (point.y * 0.2).toInt()
+        view.findViewById<AppCompatButton>(R.id.error_no_room_btn).setOnClickListener {
+            finish()
+        }
+
+
+        alertDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        alertDialog.window!!.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+        alertDialog.setCancelable(false)
+        alertDialog.window!!.attributes.width = pointWidth
+        alertDialog.window!!.attributes.height = pointHeight
+        alertDialog.show()
+
+    }
+
+
     inner class HorizonSpaceItemDecoration(private val horizonSpaceItemDecoration:Int):
             RecyclerView.ItemDecoration(){
         override fun getItemOffsets(
@@ -246,7 +281,7 @@ class RoomActivity : AppCompatActivity() {
             Log.d(TAG, "onCreate: $message")
             if(message == RoomStatusEnum.EXIT){
                 runOnUiThread {
-                    finish()
+                    showDialogError()
                 }
             }
         }

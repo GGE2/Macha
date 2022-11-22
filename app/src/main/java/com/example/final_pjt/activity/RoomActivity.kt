@@ -157,7 +157,9 @@ class RoomActivity : AppCompatActivity() {
         stompClient.topic("/sub/canvas-room/${roomId}").subscribe{
             topicMessage ->
             runOnUiThread {
-                binding.draw.addPoint(Gson().fromJson(topicMessage.payload, PointWithRoomId::class.java))
+                if(!binding.draw.nowDrawer){
+                    binding.draw.addPoint(Gson().fromJson(topicMessage.payload, PointWithRoomId::class.java))
+                }
             }
         }
 

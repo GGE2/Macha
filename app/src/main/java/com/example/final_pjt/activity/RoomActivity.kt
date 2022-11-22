@@ -95,27 +95,37 @@ class RoomActivity : AppCompatActivity() {
             }
         }
 
+        stompClient.topic("/sub/game-room/timer/$roomId").subscribe{
+            topicMessage ->
+            runOnUiThread{
+                binding.roomTimerText.text = topicMessage.payload
+                if(topicMessage.payload == "0" && roomDetail!!.nowDrawer == user.userToken){
+                    stompClient.send("/pub/game/round-end", roomId).subscribe()
+                }
+            }
+        }
+
         stompClient.topic("/sub/game-room/${roomId}").subscribe{
             topicMessage ->
             roomDetail = Gson().fromJson(topicMessage.payload, RoomDetail::class.java)
             runOnUiThread {
                 if(roomDetail!!.status == GameStatusEnum.START_ROUND){
                     //timer
-                    var time = roomDetail!!.gameTime
+//                    var time = roomDetail!!.gameTime
                     binding.roomTimerText.visibility = View.VISIBLE
-                    binding.roomTimerText.text = time.toString()
-                    CoroutineScope(Dispatchers.IO).launch {
-                        while(time > 0){
-                            delay(1000)
-                            time--
-                            runOnUiThread {
-                                binding.roomTimerText.text = time.toString()
-                            }
-                        }
-                        if(roomDetail!!.nowDrawer == user.userToken){
-                            stompClient.send("/pub/game/round-end", roomId).subscribe()
-                        }
-                    }
+//                    binding.roomTimerText.text = time.toString()
+//                    CoroutineScope(Dispatchers.IO).launch {
+//                        while(time > 0){
+//                            delay(1000)
+//                            time--
+//                            runOnUiThread {
+//                                binding.roomTimerText.text = time.toString()
+//                            }
+//                        }
+//                        if(roomDetail!!.nowDrawer == user.userToken){
+//                            stompClient.send("/pub/game/round-end", roomId).subscribe()
+//                        }
+//                    }
                     if(roomDetail!!.nowDrawer == user.userToken){
                         binding.roomAnswerText.text = roomDetail!!.answer
                         binding.roomAnswerText.visibility = View.VISIBLE

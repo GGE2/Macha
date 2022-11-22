@@ -145,6 +145,10 @@ class RoomActivity : AppCompatActivity() {
                     binding.drawClearAll.visibility = View.GONE
                     binding.drawPencil.visibility = View.GONE
                     binding.drawEraser.visibility = View.GONE
+                    binding.drawColorBlack.visibility = View.GONE
+                    binding.drawColorRed.visibility = View.GONE
+                    binding.drawColorGreen.visibility = View.GONE
+                    binding.drawColorBlue.visibility = View.GONE
                 }
             }
             Log.d(TAG, "onCreate: ${topicMessage.payload}")
@@ -177,24 +181,6 @@ class RoomActivity : AppCompatActivity() {
             }
         }
 
-        stompClient.lifecycle().subscribe { lifecycleEvent ->
-            when (lifecycleEvent.type) {
-                LifecycleEvent.Type.OPENED -> {
-                    Log.i("OPEND", "!!")
-                }
-                LifecycleEvent.Type.CLOSED -> {
-                    Log.i("CLOSED", "!!")
-
-                }
-                LifecycleEvent.Type.ERROR -> {
-                    Log.i("ERROR", "!!")
-                    Log.e("CONNECT ERROR", lifecycleEvent.exception.toString())
-                }
-                else ->{
-                    Log.i("ELSE", lifecycleEvent.message)
-                }
-            }
-        }
         stompClient.send("/pub/room/enter", userDataWithRoomId.toString()).subscribe()
         binding.roomChatSendButton.setOnClickListener {
             val data = JSONObject()

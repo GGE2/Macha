@@ -13,6 +13,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.final_pjt.adapter.ChatAdapter
 import com.example.final_pjt.adapter.UserAdapter
 import com.example.final_pjt.databinding.ActivityRoomBinding
@@ -32,6 +33,7 @@ import ua.naiksoftware.stomp.Stomp
 import ua.naiksoftware.stomp.dto.LifecycleEvent
 import com.example.final_pjt.util.ApplicationClass.Companion.sharedPreferencesUtil
 import com.example.final_pjt.viewmodel.RoomViewModel
+import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -122,7 +124,6 @@ class RoomActivity : AppCompatActivity() {
                     }
                 }
                 if(roomDetail!!.status == GameStatusEnum.END_GAME){
-                    showResultDialog()
                     if(roomDetail!!.roomMaster == user.userToken){
                         binding.roomStartButton.visibility = View.VISIBLE
                     }
@@ -151,7 +152,13 @@ class RoomActivity : AppCompatActivity() {
         }
 
         stompClient.topic("/sub/game-room/end/$roomId").subscribe{
-            showResultDialog()
+            topicMessage ->
+            val type = object : TypeToken<List<GameResultDTO>>() {}
+            val result = Gson().fromJson<List<GameResultDTO>>(topicMessage.payload, type.type)
+            Log.d(TAG, "onCreate: $result")
+            runOnUiThread {
+                showResultDialog(result)
+            }
         }
 
         stompClient.topic("/sub/canvas-room/${roomId}").subscribe{
@@ -259,10 +266,69 @@ class RoomActivity : AppCompatActivity() {
             outRect.right = horizonSpaceItemDecoration
         }
             }
-    fun showResultDialog(){
+    fun showResultDialog(list: List<GameResultDTO>){
         val builder = AlertDialog.Builder(this)
         val dialogBinding = DialogGameEndBinding.inflate(builder.create().layoutInflater)
         builder.setView(dialogBinding.root)
+        if(list.size == 1){
+            Glide.with(dialogBinding.root).load(list[0].user.profileImg).into(dialogBinding.user1Img)
+            dialogBinding.user1Name.text = list[0].user.nickname
+            dialogBinding.user1Score.text = "${list[0].score}점"
+            dialogBinding.user2.visibility = View.GONE
+            dialogBinding.user2Img.visibility = View.GONE
+            dialogBinding.user2Name.visibility = View.GONE
+            dialogBinding.user2Score.visibility = View.GONE
+            dialogBinding.user3.visibility = View.GONE
+            dialogBinding.user3Img.visibility = View.GONE
+            dialogBinding.user3Name.visibility = View.GONE
+            dialogBinding.user3Score.visibility = View.GONE
+            dialogBinding.user4.visibility = View.GONE
+            dialogBinding.user4Img.visibility = View.GONE
+            dialogBinding.user4Name.visibility = View.GONE
+            dialogBinding.user4Score.visibility = View.GONE
+        } else if(list.size == 2){
+            Glide.with(dialogBinding.root).load(list[0].user.profileImg).into(dialogBinding.user1Img)
+            dialogBinding.user1Name.text = list[0].user.nickname
+            dialogBinding.user1Score.text = "${list[0].score}점"
+            Glide.with(dialogBinding.root).load(list[1].user.profileImg).into(dialogBinding.user2Img)
+            dialogBinding.user2Name.text = list[1].user.nickname
+            dialogBinding.user2Score.text = "${list[1].score}점"
+            dialogBinding.user3.visibility = View.GONE
+            dialogBinding.user3Img.visibility = View.GONE
+            dialogBinding.user3Name.visibility = View.GONE
+            dialogBinding.user3Score.visibility = View.GONE
+            dialogBinding.user4.visibility = View.GONE
+            dialogBinding.user4Img.visibility = View.GONE
+            dialogBinding.user4Name.visibility = View.GONE
+            dialogBinding.user4Score.visibility = View.GONE
+        } else if(list.size == 3){
+            Glide.with(dialogBinding.root).load(list[0].user.profileImg).into(dialogBinding.user1Img)
+            dialogBinding.user1Name.text = list[0].user.nickname
+            dialogBinding.user1Score.text = "${list[0].score}점"
+            Glide.with(dialogBinding.root).load(list[1].user.profileImg).into(dialogBinding.user2Img)
+            dialogBinding.user2Name.text = list[1].user.nickname
+            dialogBinding.user2Score.text = "${list[1].score}점"
+            Glide.with(dialogBinding.root).load(list[2].user.profileImg).into(dialogBinding.user3Img)
+            dialogBinding.user3Name.text = list[2].user.nickname
+            dialogBinding.user3Score.text = "${list[2].score}점"
+            dialogBinding.user4.visibility = View.GONE
+            dialogBinding.user4Img.visibility = View.GONE
+            dialogBinding.user4Name.visibility = View.GONE
+            dialogBinding.user4Score.visibility = View.GONE
+        } else{
+            Glide.with(dialogBinding.root).load(list[0].user.profileImg).into(dialogBinding.user1Img)
+            dialogBinding.user1Name.text = list[0].user.nickname
+            dialogBinding.user1Score.text = "${list[0].score}점"
+            Glide.with(dialogBinding.root).load(list[1].user.profileImg).into(dialogBinding.user2Img)
+            dialogBinding.user2Name.text = list[1].user.nickname
+            dialogBinding.user2Score.text = "${list[1].score}점"
+            Glide.with(dialogBinding.root).load(list[2].user.profileImg).into(dialogBinding.user3Img)
+            dialogBinding.user3Name.text = list[2].user.nickname
+            dialogBinding.user3Score.text = "${list[2].score}점"
+            Glide.with(dialogBinding.root).load(list[3].user.profileImg).into(dialogBinding.user4Img)
+            dialogBinding.user4Name.text = list[3].user.nickname
+            dialogBinding.user4Score.text = "${list[3].score}점"
+        }
         builder.setPositiveButton("확인") { dialog, _ -> dialog?.cancel() }.show()
     }
 }

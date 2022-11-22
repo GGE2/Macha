@@ -50,7 +50,8 @@ class RoomActivity : AppCompatActivity() {
     private val stompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP, url)
     private val userDataWithRoomId = JSONObject()
     private var roomDetail: RoomDetail? = null
-    private var roomList = listOf<RoomDetail>()
+    private val auth = FirebaseAuth.getInstance()
+    private val user = sharedPreferencesUtil.getUser()
     var roomId:String? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,138 +70,10 @@ class RoomActivity : AppCompatActivity() {
             binding.roomStartButton.visibility = View.GONE
             stompClient.send("/pub/game/round-start", roomId).subscribe()
         }
-        val auth = FirebaseAuth.getInstance()
         binding.roomChatRecyclerView.adapter = ChatAdapter(listOf())
         binding.roomChatRecyclerView.layoutManager = LinearLayoutManager(this)
-        
-        stompClient.connect()
 
-        val userJson = JSONObject()
-        val user = sharedPreferencesUtil.getUser()
-        userJson.put("userToken", auth.currentUser?.uid)
-        userJson.put("nickname", auth.currentUser?.displayName!!)
-        userJson.put("profileImg", auth.currentUser?.photoUrl!!.toString())
-        userJson.put("userId", user.userId)
-        userJson.put("isOnline", 1)
-        userDataWithRoomId.put("user", userJson)
-        userDataWithRoomId.put("roomId", roomId);
-
-        stompClient.topic("/sub/chat-room/${roomId}").subscribe{
-                topicMessage ->
-            Log.d(TAG, "onCreate: ${topicMessage.payload}")
-            val message = Gson().fromJson(topicMessage.payload, Message::class.java)
-            list.add(message)
-            runOnUiThread {
-                binding.roomChatRecyclerView.adapter = ChatAdapter(list.toList())
-            }
-        }
-
-        stompClient.topic("/sub/game/status/$roomId").subscribe{
-            topicMessage ->
-            val message = Gson().fromJson(topicMessage.payload, RoomStatusEnum::class.java)
-            Log.d(TAG, "onCreate: $message")
-            if(message == RoomStatusEnum.EXIT){
-                runOnUiThread {
-                    finish()
-                }
-            }
-        }
-
-        stompClient.topic("/sub/game-room/timer/$roomId").subscribe{
-            topicMessage ->
-            runOnUiThread{
-                binding.roomTimerText.text = topicMessage.payload
-                if(topicMessage.payload == "0" && roomDetail!!.nowDrawer == user.userToken){
-                    stompClient.send("/pub/game/round-end", roomId).subscribe()
-                }
-            }
-        }
-
-        stompClient.topic("/sub/game-room/${roomId}").subscribe{
-            topicMessage ->
-            roomDetail = Gson().fromJson(topicMessage.payload, RoomDetail::class.java)
-            runOnUiThread {
-                if(roomDetail!!.status == GameStatusEnum.START_ROUND){
-                    //timer
-//                    var time = roomDetail!!.gameTime
-                    binding.roomTimerText.visibility = View.VISIBLE
-//                    binding.roomTimerText.text = time.toString()
-//                    CoroutineScope(Dispatchers.IO).launch {
-//                        while(time > 0){
-//                            delay(1000)
-//                            time--
-//                            runOnUiThread {
-//                                binding.roomTimerText.text = time.toString()
-//                            }
-//                        }
-//                        if(roomDetail!!.nowDrawer == user.userToken){
-//                            stompClient.send("/pub/game/round-end", roomId).subscribe()
-//                        }
-//                    }
-                    if(roomDetail!!.nowDrawer == user.userToken){
-                        binding.roomAnswerText.text = roomDetail!!.answer
-                        binding.roomAnswerText.visibility = View.VISIBLE
-                    } else {
-                        binding.roomAnswerText.visibility = View.GONE
-                    }
-                }
-                if(roomDetail!!.status == GameStatusEnum.END_GAME){
-                    if(roomDetail!!.roomMaster == user.userToken){
-                        binding.roomStartButton.visibility = View.VISIBLE
-                    }
-                    binding.roomTimerText.visibility = View.GONE
-                    binding.roomAnswerText.visibility = View.GONE
-                }
-                if(roomDetail!!.roomMaster != user.userToken){
-                    binding.roomStartButton.visibility = View.GONE
-                }
-                userAdapter.users = roomDetail!!.userSet
-                userAdapter.notifyDataSetChanged()
-                binding.draw.nowDrawer = roomDetail!!.nowDrawer == auth.currentUser?.uid
-                binding.draw.stompClient = stompClient
-                if(roomDetail!!.nowDrawer == auth.currentUser?.uid){
-                    binding.drawClearAll.visibility = View.VISIBLE
-                    binding.drawPencil.visibility = View.VISIBLE
-                    binding.drawEraser.visibility = View.VISIBLE
-                } else {
-                    binding.drawClearAll.visibility = View.GONE
-                    binding.drawPencil.visibility = View.GONE
-                    binding.drawEraser.visibility = View.GONE
-                    binding.drawColorBlack.visibility = View.GONE
-                    binding.drawColorRed.visibility = View.GONE
-                    binding.drawColorGreen.visibility = View.GONE
-                    binding.drawColorBlue.visibility = View.GONE
-                }
-            }
-            Log.d(TAG, "onCreate: ${topicMessage.payload}")
-            Log.d(TAG, "onCreate: $roomDetail")
-        }
-
-        stompClient.topic("/sub/game-room/end/$roomId").subscribe{
-            topicMessage ->
-            val type = object : TypeToken<List<GameResultDTO>>() {}
-            val result = Gson().fromJson<List<GameResultDTO>>(topicMessage.payload, type.type)
-            Log.d(TAG, "onCreate: $result")
-            runOnUiThread {
-                showResultDialog(result)
-            }
-        }
-
-        stompClient.topic("/sub/canvas-room/${roomId}").subscribe{
-            topicMessage ->
-            runOnUiThread {
-                if(!binding.draw.nowDrawer){
-                    binding.draw.addPoint(Gson().fromJson(topicMessage.payload, PointWithRoomId::class.java))
-                }
-            }
-        }
-
-        stompClient.topic("/sub/canvas/clear/${roomId}").subscribe{
-                topicMessage ->
-            runOnUiThread {
-                binding.draw.clear()
-            }
-        }
+        connectStomp()
 
         stompClient.send("/pub/room/enter", userDataWithRoomId.toString()).subscribe()
         binding.roomChatSendButton.setOnClickListener {
@@ -254,6 +127,13 @@ class RoomActivity : AppCompatActivity() {
         }
         binding.drawColorBlue.setOnClickListener {
             binding.draw.currentColor = Color.BLUE
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if(!stompClient.isConnected){
+            connectStomp()
         }
     }
 
@@ -337,5 +217,119 @@ class RoomActivity : AppCompatActivity() {
             dialogBinding.user4Score.text = "${list[3].score}점"
         }
         builder.setPositiveButton("확인") { dialog, _ -> dialog?.cancel() }.show()
+    }
+
+    fun connectStomp(){
+        val userJson = JSONObject()
+        userJson.put("userToken", auth.currentUser?.uid)
+        userJson.put("nickname", auth.currentUser?.displayName!!)
+        userJson.put("profileImg", auth.currentUser?.photoUrl!!.toString())
+        userJson.put("userId", user.userId)
+        userJson.put("isOnline", 1)
+        userDataWithRoomId.put("user", userJson)
+        userDataWithRoomId.put("roomId", roomId);
+
+        stompClient.connect()
+        stompClient.topic("/sub/chat-room/${roomId}").subscribe{
+                topicMessage ->
+            Log.d(TAG, "onCreate: ${topicMessage.payload}")
+            val message = Gson().fromJson(topicMessage.payload, Message::class.java)
+            list.add(message)
+            runOnUiThread {
+                binding.roomChatRecyclerView.adapter = ChatAdapter(list.toList())
+            }
+        }
+
+        stompClient.topic("/sub/game/status/$roomId").subscribe{
+                topicMessage ->
+            val message = Gson().fromJson(topicMessage.payload, RoomStatusEnum::class.java)
+            Log.d(TAG, "onCreate: $message")
+            if(message == RoomStatusEnum.EXIT){
+                runOnUiThread {
+                    finish()
+                }
+            }
+        }
+
+        stompClient.topic("/sub/game-room/timer/$roomId").subscribe{
+                topicMessage ->
+            runOnUiThread{
+                binding.roomTimerText.text = topicMessage.payload
+                if(topicMessage.payload == "0" && roomDetail!!.nowDrawer == user.userToken){
+                    stompClient.send("/pub/game/round-end", roomId).subscribe()
+                }
+            }
+        }
+
+        stompClient.topic("/sub/game-room/${roomId}").subscribe{
+                topicMessage ->
+            roomDetail = Gson().fromJson(topicMessage.payload, RoomDetail::class.java)
+            runOnUiThread {
+                if(roomDetail!!.status == GameStatusEnum.START_ROUND){
+                    binding.roomTimerText.visibility = View.VISIBLE
+                    if(roomDetail!!.nowDrawer == user.userToken){
+                        binding.roomAnswerText.text = roomDetail!!.answer
+                        binding.roomAnswerText.visibility = View.VISIBLE
+                    } else {
+                        binding.roomAnswerText.visibility = View.GONE
+                    }
+                }
+                if(roomDetail!!.status == GameStatusEnum.END_GAME){
+                    if(roomDetail!!.roomMaster == user.userToken){
+                        binding.roomStartButton.visibility = View.VISIBLE
+                    }
+                    binding.roomTimerText.visibility = View.GONE
+                    binding.roomAnswerText.visibility = View.GONE
+                }
+                if(roomDetail!!.roomMaster != user.userToken){
+                    binding.roomStartButton.visibility = View.GONE
+                }
+                userAdapter.users = roomDetail!!.userSet
+                userAdapter.notifyDataSetChanged()
+                binding.draw.nowDrawer = roomDetail!!.nowDrawer == auth.currentUser?.uid
+                binding.draw.stompClient = stompClient
+                if(roomDetail!!.nowDrawer == auth.currentUser?.uid){
+                    binding.drawClearAll.visibility = View.VISIBLE
+                    binding.drawPencil.visibility = View.VISIBLE
+                    binding.drawEraser.visibility = View.VISIBLE
+                } else {
+                    binding.drawClearAll.visibility = View.GONE
+                    binding.drawPencil.visibility = View.GONE
+                    binding.drawEraser.visibility = View.GONE
+                    binding.drawColorBlack.visibility = View.GONE
+                    binding.drawColorRed.visibility = View.GONE
+                    binding.drawColorGreen.visibility = View.GONE
+                    binding.drawColorBlue.visibility = View.GONE
+                }
+            }
+            Log.d(TAG, "onCreate: ${topicMessage.payload}")
+            Log.d(TAG, "onCreate: $roomDetail")
+        }
+
+        stompClient.topic("/sub/game-room/end/$roomId").subscribe{
+                topicMessage ->
+            val type = object : TypeToken<List<GameResultDTO>>() {}
+            val result = Gson().fromJson<List<GameResultDTO>>(topicMessage.payload, type.type)
+            Log.d(TAG, "onCreate: $result")
+            runOnUiThread {
+                showResultDialog(result)
+            }
+        }
+
+        stompClient.topic("/sub/canvas-room/${roomId}").subscribe{
+                topicMessage ->
+            runOnUiThread {
+                if(!binding.draw.nowDrawer){
+                    binding.draw.addPoint(Gson().fromJson(topicMessage.payload, PointWithRoomId::class.java))
+                }
+            }
+        }
+
+        stompClient.topic("/sub/canvas/clear/${roomId}").subscribe{
+                topicMessage ->
+            runOnUiThread {
+                binding.draw.clear()
+            }
+        }
     }
 }

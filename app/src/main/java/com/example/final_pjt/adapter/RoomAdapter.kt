@@ -33,7 +33,6 @@ class RoomAdapter(var rooms : MutableList<RoomDetail>) : RecyclerView.Adapter<Ro
                 binding.roomItemTvPerson.text = "${room.numOfPeople}/${room.maxNumOfPeople}"
             }
             else{
-                Log.d(TAG, "bindData: ${123}")
                 binding.roomItemBtnEnter.isClickable = true
                 binding.roomItemBack.background = ColorDrawable(Color.WHITE)
                 binding.roomItemBtnSetting.text = "게임 대기"

@@ -98,7 +98,7 @@ class MainActivity : AppCompatActivity(){
                         response: Response<RoomDetail>
                     ) {
                         var data = response.body()!!
-                        if(data.numOfPeople>=data.maxNumOfPeople||data!!.roomStatus== RoomStatusEnum.STAND_BY){
+                        if(data.numOfPeople>=data.maxNumOfPeople||data!!.roomStatus== RoomStatusEnum.PROCEEDING){
                             showDialogError2()
                         }else{
                             var intent = Intent(this@MainActivity,RoomActivity::class.java)

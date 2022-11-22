@@ -95,6 +95,17 @@ class RoomActivity : AppCompatActivity() {
             }
         }
 
+        stompClient.topic("/sub/game/status/$roomId").subscribe{
+            topicMessage ->
+            val message = Gson().fromJson(topicMessage.payload, RoomStatusEnum::class.java)
+            Log.d(TAG, "onCreate: $message")
+            if(message == RoomStatusEnum.EXIT){
+                runOnUiThread {
+                    finish()
+                }
+            }
+        }
+
         stompClient.topic("/sub/game-room/timer/$roomId").subscribe{
             topicMessage ->
             runOnUiThread{

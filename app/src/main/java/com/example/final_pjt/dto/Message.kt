@@ -7,8 +7,9 @@ class Message (
     var user : User,
     @SerializedName(value = "message")
     var text : String,
+    var messageType : MessageTypeEnum,
         ){
     override fun toString(): String {
-        return "Message(user=$user, text='$text')"
+        return "Message(user=$user, text='$text', messageType=$messageType)"
     }
 }

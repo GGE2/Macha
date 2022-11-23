@@ -3,5 +3,7 @@
     <array name="preloaded_fonts" translatable="false">
         <item>@font/do_hyeon</item>
         <item>@font/nanum_pen_script</item>
+        <item>@font/pacifico</item>
+        <item>@font/rubik_mono_one</item>
     </array>
 </resources>

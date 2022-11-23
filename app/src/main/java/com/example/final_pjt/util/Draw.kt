@@ -34,6 +34,7 @@ class Draw : View {
         list.forEachIndexed { index, pointWithRoomId ->
             if(index > 0){
                 if(pointWithRoomId.point.isContinue){
+                    paint.strokeCap = Paint.Cap.ROUND
                     paint.color = pointWithRoomId.point.color
                     paint.strokeWidth = pointWithRoomId.point.width
                     canvas!!.drawLine(list[index-1].point.x, list[index-1].point.y, pointWithRoomId.point.x, pointWithRoomId.point.y, paint)

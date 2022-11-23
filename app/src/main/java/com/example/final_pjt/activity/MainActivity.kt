@@ -8,6 +8,7 @@ import android.graphics.Point
 import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.PaintDrawable
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -17,6 +18,7 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.EditText
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -29,6 +31,7 @@ import com.example.final_pjt.adapter.RoomAdapter
 import com.example.final_pjt.databinding.ActivityMainBinding
 import com.example.final_pjt.dto.Room
 import com.example.final_pjt.dto.RoomDetail
+import com.example.final_pjt.dto.RoomStatusEnum
 import com.example.final_pjt.dto.User
 import com.example.final_pjt.service.RoomService
 import com.example.final_pjt.service.UserService
@@ -48,29 +51,35 @@ class MainActivity : AppCompatActivity(){
     val viewModel:RoomViewModel by viewModels()
     var rooms = mutableListOf<RoomDetail>()
     var user: User? = null
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         init()
-        getRooms()
         binding.btnMainCreateRoom.setOnClickListener {
             showDialog()
-        }
-        binding.btnMainRefresh.setOnClickListener {
-            getRooms()
         }
         viewModel.roomLiveData.observe(this, Observer {
             Log.d(TAG, "onCreate: observe")
             roomAdapter.rooms = it
             roomAdapter.notifyDataSetChanged()
         })
+        binding.mainSwipe.setOnRefreshListener {
+            getRooms()
+        }
+        
     }
 
     private fun init(){
         initLoginUser()
         setAdapter()
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+        getRooms()
     }
 
 
@@ -90,9 +99,27 @@ class MainActivity : AppCompatActivity(){
         roomAdapter = RoomAdapter(mutableListOf<RoomDetail>())
         roomAdapter.setOnRoomClickListener(object :RoomAdapter.OnRoomClickListener {
             override fun onRoomClickListener(view: View, position: Int) {
-                var intent = Intent(this@MainActivity,RoomActivity::class.java)
-                intent.putExtra("roomId",rooms.get(position).roomId)
-                startActivity(intent)
+                val service = ApplicationClass.retrofit.create(RoomService::class.java)
+                service.getRoomDetail(rooms[position].roomId).enqueue(object : Callback<RoomDetail> {
+                    override fun onResponse(
+                        call: Call<RoomDetail>,
+                        response: Response<RoomDetail>
+                    ) {
+                        var data = response.body()!!
+                        if(data.numOfPeople>=data.maxNumOfPeople||data!!.roomStatus== RoomStatusEnum.PROCEEDING){
+                            showDialogError2()
+                        }else{
+                            var intent = Intent(this@MainActivity,RoomActivity::class.java)
+                            intent.putExtra("roomId",rooms.get(position).roomId)
+                            startActivity(intent)
+                        }
+
+                    }
+                    override fun onFailure(call: Call<RoomDetail>, t: Throwable) {
+                        //통신 실패 = 방이 사라짐
+                        showDialogError()
+                    }
+                })
             }
         })
         binding.recyclerMainRoom.apply {
@@ -147,13 +174,64 @@ class MainActivity : AppCompatActivity(){
                 viewModel.setData(response.body()!!)
                 rooms.clear()
                 rooms = response.body()!!
+                Log.d(TAG, "onResponse: ${response.body()!!}")
                 roomAdapter.notifyDataSetChanged()
+                binding.mainSwipe.isRefreshing = false
             }
             override fun onFailure(call: Call<MutableList<RoomDetail>>, t: Throwable) {
                 Log.d(TAG, "onFailure: ${t.message}")
             }
 
         })
+
+    }
+
+    fun showDialogError2(){
+        var builder = AlertDialog.Builder(this, androidx.appcompat.R.style.AlertDialog_AppCompat)
+        var view = LayoutInflater.from(this).inflate(R.layout.dialog_enter_room_error_no_enter_room,findViewById(R.id.error_no_enter_room))
+        builder.setView(view)
+
+        val alertDialog = builder.create()
+        val display = (getSystemService(Context.WINDOW_SERVICE) as WindowManager).defaultDisplay
+        var point = Point()
+        display.getSize(point)
+        var pointWidth = (point.x * 0.7).toInt()
+        var pointHeight = (point.y * 0.2).toInt()
+
+        view.findViewById<AppCompatButton>(R.id.error_no_enter_room_btn).setOnClickListener {
+            alertDialog.dismiss()
+            getRooms()
+        }
+        alertDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        alertDialog.window!!.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+        alertDialog.setCancelable(false)
+        alertDialog.window!!.attributes.width = pointWidth
+        alertDialog.window!!.attributes.height = pointHeight
+        alertDialog.show()
+
+    }
+    fun showDialogError(){
+        var builder = AlertDialog.Builder(this, androidx.appcompat.R.style.AlertDialog_AppCompat)
+        var view = LayoutInflater.from(this).inflate(R.layout.dialog_enter_room_error_no_room,findViewById(R.id.error_no_room))
+        builder.setView(view)
+
+        val alertDialog = builder.create()
+        val display = (getSystemService(Context.WINDOW_SERVICE) as WindowManager).defaultDisplay
+        var point = Point()
+        display.getSize(point)
+        var pointWidth = (point.x * 0.7).toInt()
+        var pointHeight = (point.y * 0.2).toInt()
+
+        view.findViewById<AppCompatButton>(R.id.error_no_room_btn).setOnClickListener {
+            alertDialog.dismiss()
+            getRooms()
+        }
+        alertDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        alertDialog.window!!.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+        alertDialog.setCancelable(false)
+        alertDialog.window!!.attributes.width = pointWidth
+        alertDialog.window!!.attributes.height = pointHeight
+        alertDialog.show()
 
     }
     fun showDialog(){

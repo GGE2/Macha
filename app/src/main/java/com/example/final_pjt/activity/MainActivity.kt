@@ -8,6 +8,7 @@ import android.graphics.Point
 import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.PaintDrawable
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -17,6 +18,7 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.EditText
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -49,6 +51,7 @@ class MainActivity : AppCompatActivity(){
     val viewModel:RoomViewModel by viewModels()
     var rooms = mutableListOf<RoomDetail>()
     var user: User? = null
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -57,14 +60,15 @@ class MainActivity : AppCompatActivity(){
         binding.btnMainCreateRoom.setOnClickListener {
             showDialog()
         }
-        binding.btnMainRefresh.setOnClickListener {
-            getRooms()
-        }
         viewModel.roomLiveData.observe(this, Observer {
             Log.d(TAG, "onCreate: observe")
             roomAdapter.rooms = it
             roomAdapter.notifyDataSetChanged()
         })
+        binding.mainSwipe.setOnRefreshListener {
+            getRooms()
+        }
+        
     }
 
     private fun init(){
@@ -172,6 +176,7 @@ class MainActivity : AppCompatActivity(){
                 rooms = response.body()!!
                 Log.d(TAG, "onResponse: ${response.body()!!}")
                 roomAdapter.notifyDataSetChanged()
+                binding.mainSwipe.isRefreshing = false
             }
             override fun onFailure(call: Call<MutableList<RoomDetail>>, t: Throwable) {
                 Log.d(TAG, "onFailure: ${t.message}")

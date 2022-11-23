@@ -94,6 +94,7 @@ class RoomActivity : AppCompatActivity() {
             userJson.put("isOnline", 1)
             data.put("user", userJson)
             data.put("roomId", "${roomId}")
+            data.put("messageType", MessageTypeEnum.USER_CHAT)
             stompClient.send("/pub/chat/message", data.toString()).subscribe()
             binding.roomChatEditText.text.clear()
         }

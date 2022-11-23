@@ -1,5 +1,6 @@
 package com.example.final_pjt.adapter
 
+import android.graphics.Color
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -18,6 +19,7 @@ class ChatAdapter(var list : List<Message>) : RecyclerView.Adapter<ChatAdapter.C
                 binding.chatOtherLayout.visibility = View.GONE
                 if(message.messageType == MessageTypeEnum.NOTICE){
                     binding.chatMyMsg.gravity = Gravity.CENTER
+                    binding.chatMyMsg.setTextColor(Color.GRAY)
                 }
                 binding.chatMyMsg.text = message.text
             } else {
@@ -27,6 +29,7 @@ class ChatAdapter(var list : List<Message>) : RecyclerView.Adapter<ChatAdapter.C
                 if(message.messageType == MessageTypeEnum.NOTICE){
                     binding.chatOtherNickName.visibility = View.GONE
                     binding.chatOtherMsg.gravity = Gravity.CENTER
+                    binding.chatOtherMsg.setTextColor(Color.GRAY)
                 }
             }
         }

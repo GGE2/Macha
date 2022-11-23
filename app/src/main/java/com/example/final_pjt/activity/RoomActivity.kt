@@ -311,7 +311,7 @@ class RoomActivity : AppCompatActivity() {
                 topicMessage ->
             runOnUiThread{
                 binding.roomTimerText.text = topicMessage.payload
-                if(topicMessage.payload == "0" && roomDetail!!.nowDrawer == user.userToken){
+                if(topicMessage.payload == "0" && roomDetail!!.roomMaster == user.userToken){
                     stompClient.send("/pub/game/round-end", roomId).subscribe()
                 }
             }

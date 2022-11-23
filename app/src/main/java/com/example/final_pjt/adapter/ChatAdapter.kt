@@ -25,7 +25,7 @@ class ChatAdapter(var list : List<Message>) : RecyclerView.Adapter<ChatAdapter.C
             } else {
                 binding.chatMyLayout.visibility = View.GONE
                 binding.chatOtherMsg.text = message.text
-                binding.chatOtherNickName.text = message.user.nickname
+                binding.chatOtherNickName.text = "${message.user.nickname} : "
                 if(message.messageType == MessageTypeEnum.NOTICE){
                     binding.chatOtherNickName.visibility = View.GONE
                     binding.chatOtherMsg.gravity = Gravity.CENTER

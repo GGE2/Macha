@@ -45,6 +45,7 @@ public class GameRoomRepository {
         gameRoom.setAnswer("0a124856-2b15-459d-8d6d-145aabd29231");
         gameRoom.setNumOfPeople(0);
         gameRoom.setUserSet(new LinkedHashSet<>());
+        gameRoom.setRoundCnt(0);
         gameRoom.getUserSet().add(gameRoomRequestDTO.getUser());
         gameRoom.setRoomMaster(gameRoomRequestDTO.getUser().getUserToken());
         gameRoomDTOMap.put(gameRoom.getRoomId(), gameRoom);

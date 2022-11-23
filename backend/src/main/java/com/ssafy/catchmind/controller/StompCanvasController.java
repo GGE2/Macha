@@ -2,6 +2,8 @@ package com.ssafy.catchmind.controller;
 
 import com.ssafy.catchmind.model.dto.CanvasInfoDTO;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
@@ -10,6 +12,7 @@ import org.springframework.stereotype.Controller;
 @RequiredArgsConstructor
 public class StompCanvasController {
 
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final SimpMessagingTemplate template; //특정 Broker로 메세지를 전달
 
     //Client가 SEND할 수 있는 경로
@@ -24,7 +27,7 @@ public class StompCanvasController {
 
     @MessageMapping(value = "/canvas/message")  //   pub/chat/message, {}, {}
     public void message(CanvasInfoDTO canvasInfoDTO){
-        System.out.println(canvasInfoDTO.getRoomId() + " " + canvasInfoDTO.getPoint());
+        //System.out.println(canvasInfoDTO.getRoomId() + " " + canvasInfoDTO.getPoint());
         //GameRoomDTO gameRoomDTO = gameRoomController.getRoom(message.getRoomId());
         //gameRoomDTO.
         template.convertAndSend("/sub/canvas-room/" + canvasInfoDTO.getRoomId(), canvasInfoDTO);
@@ -32,7 +35,7 @@ public class StompCanvasController {
 
     @MessageMapping(value = "/canvas/clear")
     public void clear(String roomId) {
-        System.out.println("/canvas/clear" + " " + roomId);
+        logger.info("/canvas/clear" + " " + roomId);
         template.convertAndSend("/sub/canvas/clear/" + roomId, "CANVAS_CLEAR");
     }
 }

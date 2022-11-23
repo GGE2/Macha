@@ -3,6 +3,8 @@ package com.ssafy.catchmind.controller;
 import com.ssafy.catchmind.model.dto.User;
 import com.ssafy.catchmind.model.service.UserServiceImpl;
 import io.swagger.annotations.ApiOperation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +17,7 @@ public class UserController {
 
     @Autowired
     UserServiceImpl userService;
-
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     @PostMapping("/login")
     @ApiOperation(value = "로그인 처리후 성공적으로 로그인 되었다면 HTTP STATUS CODE : 200", response = ResponseEntity.class)
     public ResponseEntity<?> login(@RequestBody User user) {
@@ -24,7 +26,7 @@ public class UserController {
             return new ResponseEntity<>(false, HttpStatus.OK);
 
         User selected = userService.login(user.getUserToken());
-        System.out.println(user);
+        logger.info("/login - " + user);
 
         // 아직 회원가입 안된 경우
         if (selected == null) {
@@ -33,12 +35,5 @@ public class UserController {
         }
 
         return new ResponseEntity<>(selected, HttpStatus.OK);
-    }
-
-    @GetMapping("/test")
-    public String test(@RequestParam String str) {
-        System.out.println(str);
-        System.out.println();
-        return "success";
     }
 }

@@ -1,24 +1,21 @@
 package com.ssafy.catchmind.model.dto;
 
+import com.ssafy.catchmind.model.MessageTypeEnum;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class ChatMessageDTO {
-
-    public ChatMessageDTO() {
-    }
-
-    public ChatMessageDTO(String roomId, User user, String message) {
-        this.roomId = roomId;
-        this.user = user;
-        this.message = message;
-    }
 
     private String roomId;
     private User user;
     private String message;
+    private MessageTypeEnum messageType;
 
     @Override
     public String toString() {
@@ -26,6 +23,7 @@ public class ChatMessageDTO {
                 "roomId='" + roomId + '\'' +
                 ", user=" + user +
                 ", message='" + message + '\'' +
+                ", messageType=" + messageType +
                 '}';
     }
 }

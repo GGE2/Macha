@@ -9,4 +9,12 @@ public class RoomEnterDTO {
 
     String roomId;
     User user;
+
+    @Override
+    public String toString() {
+        return "RoomEnterDTO{" +
+                "roomId='" + roomId + '\'' +
+                ", user=" + user +
+                '}';
+    }
 }

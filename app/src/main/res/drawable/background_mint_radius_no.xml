@@ -9,5 +9,5 @@
         android:bottomRightRadius="22dp"
         ></corners>
     <stroke android:width="2dp"
-        android:color="@color/white"></stroke>
+        android:color="#A4A4A4"></stroke>
 </shape>

@@ -56,6 +56,7 @@
        android:id="@+id/room_user_recycler_view"
        android:layout_width="match_parent"
        android:layout_height="80dp"
+       android:background="@drawable/recycler"
        app:layout_constraintLeft_toLeftOf="parent"
        app:layout_constraintTop_toBottomOf="@id/draw"
        app:layout_constraintBottom_toTopOf="@id/room_chat_recycler_view"/>

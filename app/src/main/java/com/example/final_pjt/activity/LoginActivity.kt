@@ -46,7 +46,7 @@ class LoginActivity : AppCompatActivity() {
         init()
         //기존 로그인 이력이 있었던 사람은 바로 Main으로 이동
 
-        Glide.with(this).load(R.raw.dd_cheering).into(binding.loginChIv)
+        Glide.with(this).load(R.raw.output_onlinegiftools).into(binding.loginChIv)
     }
 
     /**

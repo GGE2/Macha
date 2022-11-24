@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <array name="preloaded_fonts" translatable="false">
+        <item>@font/baloo</item>
         <item>@font/do_hyeon</item>
+        <item>@font/kanit_bold</item>
+        <item>@font/kanit_thin</item>
         <item>@font/nanum_pen_script</item>
         <item>@font/pacifico</item>
         <item>@font/rubik_mono_one</item>

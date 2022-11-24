@@ -47,6 +47,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginBottom="0dp"
+        android:background="#8f8074"
         app:layout_constraintBottom_toTopOf="@+id/room_user_recycler_view"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -64,7 +65,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/room_chat_recycler_view"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="150dp"
         android:background="#E6E6E6"
         app:layout_constraintBottom_toTopOf="@+id/room_chat_layout"
         app:layout_constraintEnd_toEndOf="parent"

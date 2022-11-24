@@ -1,23 +1,23 @@
 package com.example.final_pjt.activity
 
 import android.content.Context
-import android.content.DialogInterface
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Point
 import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
+import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import android.widget.TextView
-import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -27,26 +27,15 @@ import com.example.final_pjt.adapter.UserAdapter
 import com.example.final_pjt.databinding.ActivityRoomBinding
 import com.example.final_pjt.databinding.DialogGameEndBinding
 import com.example.final_pjt.dto.*
-import com.example.final_pjt.service.RoomService
-import com.example.final_pjt.util.ApplicationClass
+import com.example.final_pjt.util.ApplicationClass.Companion.sharedPreferencesUtil
 import com.google.firebase.auth.FirebaseAuth
 import com.google.gson.Gson
-import com.google.gson.JsonParser
+import com.google.gson.reflect.TypeToken
 import org.json.JSONObject
-import org.json.JSONStringer
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import ua.naiksoftware.stomp.Stomp
 import ua.naiksoftware.stomp.dto.LifecycleEvent
-import com.example.final_pjt.util.ApplicationClass.Companion.sharedPreferencesUtil
-import com.example.final_pjt.viewmodel.RoomViewModel
-import com.google.gson.reflect.TypeToken
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import java.util.Collections.emptyList
+
 
 private const val TAG = "RoomActivity_싸피"
 
@@ -96,7 +85,7 @@ class RoomActivity : AppCompatActivity() {
             data.put("roomId", "${roomId}")
             data.put("messageType", MessageTypeEnum.USER_CHAT)
             stompClient.send("/pub/chat/message", data.toString()).subscribe()
-            binding.roomChatEditText.text.clear()
+            binding.roomChatEditText.setText("")
         }
         binding.drawClearAll.setOnClickListener {
             binding.draw.clear()
@@ -308,6 +297,7 @@ class RoomActivity : AppCompatActivity() {
             list.add(message)
             runOnUiThread {
                 binding.roomChatRecyclerView.adapter = ChatAdapter(list.toList())
+                binding.roomChatRecyclerView.scrollToPosition(list.size-1)
             }
         }
 
@@ -410,4 +400,5 @@ class RoomActivity : AppCompatActivity() {
             }
         }
     }
+
 }

@@ -204,6 +204,7 @@ class RoomActivity : AppCompatActivity() {
             connected = false
             stompClient.send("/pub/room/exit", userDataWithRoomId.toString()).subscribe()
             stompClient.disconnect()
+            finish()
         }
     }
 

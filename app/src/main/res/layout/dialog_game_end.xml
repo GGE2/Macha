@@ -2,190 +2,243 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/linearLayout"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:background="@drawable/alert_radius_white"
+    android:orientation="vertical"
+    android:padding="10dp">
 
-
-    <TextView
-        android:id="@+id/user_1"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/resultLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:text="1등 : "
-        app:layout_constraintBottom_toTopOf="@+id/user_2"
-        app:layout_constraintEnd_toStartOf="@+id/user_1_img"
-        app:layout_constraintHorizontal_chainStyle="packed"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintBottom_toTopOf="@+id/alert_result_ok_btn"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-    <TextView
-        android:id="@+id/user_2"
+        <TextView
+            android:id="@+id/user_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:fontFamily="@font/do_hyeon"
+            android:text="1등 : "
+            app:layout_constraintBottom_toTopOf="@+id/user_2"
+            app:layout_constraintEnd_toStartOf="@+id/user_1_img"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/user_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:fontFamily="@font/do_hyeon"
+            android:text="2등 : "
+            app:layout_constraintBottom_toTopOf="@+id/user_3"
+            app:layout_constraintEnd_toStartOf="@+id/user_2_img"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/user_1" />
+
+        <TextView
+            android:id="@+id/user_3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:fontFamily="@font/do_hyeon"
+            android:text="3등 : "
+            app:layout_constraintBottom_toTopOf="@+id/user_4"
+            app:layout_constraintEnd_toStartOf="@+id/user_3_img"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/user_2" />
+
+        <TextView
+            android:id="@+id/user_4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:fontFamily="@font/do_hyeon"
+            android:text="4등 : "
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/user_4_img"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/user_3" />
+
+        <ImageView
+            android:id="@+id/user_1_img"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/user_2_img"
+            app:layout_constraintEnd_toStartOf="@+id/user_1_name"
+            app:layout_constraintStart_toEndOf="@+id/user_1"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_launcher_foreground" />
+
+        <ImageView
+            android:id="@+id/user_2_img"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/user_3_img"
+            app:layout_constraintEnd_toStartOf="@+id/user_2_name"
+            app:layout_constraintStart_toEndOf="@+id/user_2"
+            app:layout_constraintTop_toBottomOf="@+id/user_1_img"
+            app:srcCompat="@drawable/ic_launcher_foreground" />
+
+        <ImageView
+            android:id="@+id/user_3_img"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/user_4_img"
+            app:layout_constraintEnd_toStartOf="@+id/user_3_name"
+            app:layout_constraintStart_toEndOf="@+id/user_3"
+            app:layout_constraintTop_toBottomOf="@+id/user_2_img"
+            app:srcCompat="@drawable/ic_launcher_foreground" />
+
+        <ImageView
+            android:id="@+id/user_4_img"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/user_4_name"
+            app:layout_constraintStart_toEndOf="@+id/user_4"
+            app:layout_constraintTop_toBottomOf="@+id/user_3_img"
+            app:srcCompat="@drawable/ic_launcher_foreground" />
+
+        <TextView
+            android:id="@+id/user_1_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:fontFamily="@font/do_hyeon"
+            android:text="닉네임"
+            app:layout_constraintBottom_toTopOf="@+id/user_2_name"
+            app:layout_constraintEnd_toStartOf="@+id/user_1_score"
+            app:layout_constraintStart_toEndOf="@+id/user_1_img"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/user_2_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:fontFamily="@font/do_hyeon"
+            android:text="닉네임"
+            app:layout_constraintBottom_toTopOf="@+id/user_3_name"
+            app:layout_constraintEnd_toStartOf="@+id/user_2_score"
+            app:layout_constraintStart_toEndOf="@+id/user_2_img"
+            app:layout_constraintTop_toBottomOf="@+id/user_1_name" />
+
+        <TextView
+            android:id="@+id/user_3_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:fontFamily="@font/do_hyeon"
+            android:text="닉네임"
+            app:layout_constraintBottom_toTopOf="@+id/user_4_name"
+            app:layout_constraintEnd_toStartOf="@+id/user_3_score"
+            app:layout_constraintStart_toEndOf="@+id/user_3_img"
+            app:layout_constraintTop_toBottomOf="@+id/user_2_name" />
+
+        <TextView
+            android:id="@+id/user_4_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:fontFamily="@font/do_hyeon"
+            android:text="닉네임"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/user_4_score"
+            app:layout_constraintStart_toEndOf="@+id/user_4_img"
+            app:layout_constraintTop_toBottomOf="@+id/user_3_name" />
+
+        <TextView
+            android:id="@+id/user_1_score"
+            android:layout_width="26dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:fontFamily="@font/do_hyeon"
+            android:text="점수"
+            app:layout_constraintBottom_toTopOf="@+id/user_2_score"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/user_1_name"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/user_2_score"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:fontFamily="@font/do_hyeon"
+            android:text="점수"
+            app:layout_constraintBottom_toTopOf="@+id/user_3_score"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/user_2_name"
+            app:layout_constraintTop_toBottomOf="@+id/user_1_score" />
+
+        <TextView
+            android:id="@+id/user_3_score"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:fontFamily="@font/do_hyeon"
+            android:text="점수"
+            app:layout_constraintBottom_toTopOf="@+id/user_4_score"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/user_3_name"
+            app:layout_constraintTop_toBottomOf="@+id/user_2_score" />
+
+        <TextView
+            android:id="@+id/user_4_score"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:fontFamily="@font/do_hyeon"
+            android:text="점수"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/user_4_name"
+            app:layout_constraintTop_toBottomOf="@+id/user_3_score" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/alert_result_ok_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:text="2등 : "
-        app:layout_constraintBottom_toTopOf="@+id/user_3"
-        app:layout_constraintEnd_toStartOf="@+id/user_2_img"
-        app:layout_constraintHorizontal_chainStyle="packed"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/user_1" />
-
-    <TextView
-        android:id="@+id/user_3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:text="3등 : "
-        app:layout_constraintBottom_toTopOf="@+id/user_4"
-        app:layout_constraintEnd_toStartOf="@+id/user_3_img"
-        app:layout_constraintHorizontal_chainStyle="packed"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/user_2" />
-
-    <TextView
-        android:id="@+id/user_4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:text="4등 : "
+        android:background="@drawable/alert_btn_radius"
+        android:fontFamily="@font/do_hyeon"
+        android:text="확인"
+        android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/user_4_img"
-        app:layout_constraintHorizontal_chainStyle="packed"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/user_3" />
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/resultLayout" />
 
-    <ImageView
-        android:id="@+id/user_1_img"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/user_2_img"
-        app:layout_constraintEnd_toStartOf="@+id/user_1_name"
-        app:layout_constraintStart_toEndOf="@+id/user_1"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_launcher_foreground" />
-
-    <ImageView
-        android:id="@+id/user_2_img"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/user_3_img"
-        app:layout_constraintEnd_toStartOf="@+id/user_2_name"
-        app:layout_constraintStart_toEndOf="@+id/user_2"
-        app:layout_constraintTop_toBottomOf="@+id/user_1_img"
-        app:srcCompat="@drawable/ic_launcher_foreground" />
-
-    <ImageView
-        android:id="@+id/user_3_img"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/user_4_img"
-        app:layout_constraintEnd_toStartOf="@+id/user_3_name"
-        app:layout_constraintStart_toEndOf="@+id/user_3"
-        app:layout_constraintTop_toBottomOf="@+id/user_2_img"
-        app:srcCompat="@drawable/ic_launcher_foreground" />
-
-    <ImageView
-        android:id="@+id/user_4_img"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/user_4_name"
-        app:layout_constraintStart_toEndOf="@+id/user_4"
-        app:layout_constraintTop_toBottomOf="@+id/user_3_img"
-        app:srcCompat="@drawable/ic_launcher_foreground" />
-
-    <TextView
-        android:id="@+id/user_1_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:text="닉네임"
-        app:layout_constraintBottom_toTopOf="@+id/user_2_name"
-        app:layout_constraintStart_toEndOf="@+id/user_1_img"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/user_2_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:text="닉네임"
-        app:layout_constraintBottom_toTopOf="@+id/user_3_name"
-        app:layout_constraintStart_toEndOf="@+id/user_2_img"
-        app:layout_constraintTop_toBottomOf="@+id/user_1_name" />
-
-    <TextView
-        android:id="@+id/user_3_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:text="닉네임"
-        app:layout_constraintBottom_toTopOf="@+id/user_4_name"
-        app:layout_constraintStart_toEndOf="@+id/user_3_img"
-        app:layout_constraintTop_toBottomOf="@+id/user_2_name" />
-
-    <TextView
-        android:id="@+id/user_4_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:text="닉네임"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/user_4_img"
-        app:layout_constraintTop_toBottomOf="@+id/user_3_name" />
-
-    <TextView
-        android:id="@+id/user_1_score"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:text="점수"
-        app:layout_constraintBottom_toTopOf="@+id/user_2_score"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/user_2_score"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:text="점수"
-        app:layout_constraintBottom_toTopOf="@+id/user_3_score"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/user_1_score" />
-
-    <TextView
-        android:id="@+id/user_3_score"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:text="점수"
-        app:layout_constraintBottom_toTopOf="@+id/user_4_score"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/user_2_score" />
-
-    <TextView
-        android:id="@+id/user_4_score"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:text="점수"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/user_3_score" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

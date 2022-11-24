@@ -75,7 +75,7 @@ class RoomActivity : AppCompatActivity() {
         connectStomp()
         stompClient.send("/pub/room/enter", userDataWithRoomId.toString()).subscribe()
         binding.roomChatSendButton.setOnClickListener {
-            if(!binding.roomChatEditText.text.equals("")){
+            if(!binding.roomChatEditText.text.isNullOrEmpty()){
                 val data = JSONObject()
                 data.put("message", binding.roomChatEditText.text.toString())
                 val userJson = JSONObject()
@@ -309,7 +309,9 @@ class RoomActivity : AppCompatActivity() {
             dialogBinding.user4Name.text = list[3].user.nickname
             dialogBinding.user4Score.text = "${list[3].score}점"
         }
-        builder.setPositiveButton("확인") { dialog, _ -> dialog?.cancel() }.show()
+        val alertDialog = builder.create()
+        alertDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        alertDialog.show()
     }
 
     fun connectStomp(){

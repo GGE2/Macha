@@ -18,14 +18,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/room_timer_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:text="60"
-        android:textSize="24sp"
-        android:visibility="gone"
+    <com.example.final_pjt.util.Draw
+        android:id="@+id/draw"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="0dp"
+        android:background="#8f8074"
+        app:layout_constraintBottom_toTopOf="@+id/room_user_recycler_view"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -42,18 +41,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.example.final_pjt.util.Draw
-        android:id="@+id/draw"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginBottom="0dp"
-        android:background="#8f8074"
-        app:layout_constraintBottom_toTopOf="@+id/room_user_recycler_view"
+    <TextView
+        android:id="@+id/room_timer_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="60"
+        android:textSize="24sp"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-   <androidx.recyclerview.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
        android:id="@+id/room_user_recycler_view"
        android:layout_width="match_parent"
        android:layout_height="80dp"

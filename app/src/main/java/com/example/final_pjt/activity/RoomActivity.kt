@@ -306,6 +306,11 @@ class RoomActivity : AppCompatActivity() {
                     showDialogError()
                 }
             }
+            if(message == RoomStatusEnum.ANSWER){
+                if(roomDetail!!.roomMaster == user.userToken){
+                    stompClient.send("/pub/game/round-end", roomId).subscribe()
+                }
+            }
         }
 
         stompClient.topic("/sub/game-room/timer/$roomId").subscribe{

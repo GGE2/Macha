@@ -176,11 +176,8 @@ class MainActivity : AppCompatActivity(){
             override fun onFailure(call: Call<MutableList<RoomDetail>>, t: Throwable) {
                 Log.d(TAG, "onFailure: ${t.message}")
             }
-
         })
-
     }
-
     fun showDialogError2(){
         var builder = AlertDialog.Builder(this, androidx.appcompat.R.style.AlertDialog_AppCompat)
         var view = LayoutInflater.from(this).inflate(R.layout.dialog_enter_room_error_no_enter_room,findViewById(R.id.error_no_enter_room))
@@ -297,12 +294,12 @@ class MainActivity : AppCompatActivity(){
         }
 
         view.findViewById<AppCompatButton>(R.id.alert_exit_ok_btn).setOnClickListener {
-            var room = Room(sharedPreferencesUtil.getUser(),roomName.text.toString(),nowTime_checked?.text!!.split("초")[0].toInt(),now_checked?.text!!.split("명")[0].toInt())
-            Log.d(TAG, "showDialog: ${room.toString()}")
             /**
              * 방 성시 서버에 생성 응답 요청
              */
             if(now_checked!=null&&nowTime_checked!=null) {
+                var room = Room(sharedPreferencesUtil.getUser(),roomName.text.toString(),nowTime_checked?.text!!.split("초")[0].toInt(),now_checked?.text!!.split("명")[0].toInt())
+                Log.d(TAG, "showDialog: ${room.toString()}")
                 val service = ApplicationClass.retrofit.create(RoomService::class.java)
                 service.createRoom(room).enqueue(object : Callback<RoomDetail> {
                     override fun onResponse(

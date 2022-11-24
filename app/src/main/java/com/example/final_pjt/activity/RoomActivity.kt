@@ -167,9 +167,23 @@ class RoomActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         Log.d(TAG, "onDestroy: ")
-        stompClient.send("/pub/room/exit", userDataWithRoomId.toString()).subscribe()
-        stompClient.disconnect()
+        if(connected){
+            connected = false
+            stompClient.send("/pub/room/exit", userDataWithRoomId.toString()).subscribe()
+            stompClient.disconnect()
+        }
     }
+
+    override fun onStop() {
+        super.onStop()
+        Log.d(TAG, "onStop: ")
+        if(connected){
+            connected = false
+            stompClient.send("/pub/room/exit", userDataWithRoomId.toString()).subscribe()
+            stompClient.disconnect()
+        }
+    }
+
     fun showDialogError(){
         var builder = android.app.AlertDialog.Builder(this, androidx.appcompat.R.style.AlertDialog_AppCompat)
         var view = LayoutInflater.from(this).inflate(

@@ -117,7 +117,7 @@
         app:layout_constraintRight_toRightOf="parent"/>
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/alert_cancle_btn"
+        android:id="@+id/alert_exit_cancle_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="취소"
@@ -125,11 +125,11 @@
         android:textSize="16sp"
         android:background="@drawable/alert_btn_radius"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/alert_ok_btn"
+        app:layout_constraintRight_toLeftOf="@id/alert_exit_ok_btn"
         app:layout_constraintTop_toBottomOf="@id/alert_time_checkbox_1"
         app:layout_constraintBottom_toBottomOf="parent"/>
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/alert_ok_btn"
+        android:id="@+id/alert_exit_ok_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="만들기"
@@ -137,6 +137,6 @@
         android:fontFamily="@font/do_hyeon"
         android:background="@drawable/alert_btn_radius"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toRightOf="@id/alert_cancle_btn"
+        app:layout_constraintLeft_toRightOf="@id/alert_exit_cancle_btn"
         app:layout_constraintRight_toRightOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -65,13 +65,13 @@ class RoomAdapter(var rooms : MutableList<RoomDetail>) : RecyclerView.Adapter<Ro
         this.roomClickListener = roomClickListener
     }
 
-   /* override fun getItemViewType(position: Int): Int {
+    override fun getItemViewType(position: Int): Int {
         return position
     }
 
     override fun onViewRecycled(holder: RoomHolder) {
         super.onViewRecycled(holder)
-    }*/
+    }
     inner class VerticalSpaceItemDecoration(private val verticalSpaceHeight:Int):
             RecyclerView.ItemDecoration(){
         override fun getItemOffsets(

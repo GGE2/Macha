@@ -29,7 +29,7 @@ class ChatAdapter(var list : List<Message>) : RecyclerView.Adapter<ChatAdapter.C
                 binding.chatMyLayout.visibility = View.GONE
                 binding.chatOtherMsg.text = message.text
                 binding.chatOtherNickName.text = "${message.user.nickname} : "
-                Log.d(TAG, "bind: ${message.messageType}")
+                Log.d(TAG, "${message.text}: ${message.messageType}")
                 if(message.messageType == MessageTypeEnum.NOTICE){
                     binding.chatOtherNickName.visibility = View.GONE
                     binding.chatOtherMsg.gravity = Gravity.CENTER
@@ -50,5 +50,12 @@ class ChatAdapter(var list : List<Message>) : RecyclerView.Adapter<ChatAdapter.C
 
     override fun getItemCount(): Int {
         return list.size;
+    }
+    override fun getItemViewType(position: Int): Int {
+        return position
+    }
+
+    override fun onViewRecycled(holder: ChatHolder) {
+        super.onViewRecycled(holder)
     }
 }

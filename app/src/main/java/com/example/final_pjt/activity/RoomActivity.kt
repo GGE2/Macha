@@ -44,6 +44,7 @@ class RoomActivity : AppCompatActivity() {
     private var list: MutableList<Message> = mutableListOf()
     private val url = "ws://54.180.24.155:8080/stomp/game/websocket"
     private lateinit var userAdapter: UserAdapter
+    private lateinit var chatAdapter: ChatAdapter
     private val stompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP, url)
     private val userDataWithRoomId = JSONObject()
     private var roomDetail: RoomDetail? = null
@@ -58,6 +59,7 @@ class RoomActivity : AppCompatActivity() {
         roomId = intent.getStringExtra("roomId")
         Log.d(TAG, "onCreate: ${roomId}")
         userAdapter = UserAdapter(emptyList())
+        chatAdapter = ChatAdapter(emptyList())
         binding.roomUserRecyclerView.apply{
             adapter = userAdapter
             layoutManager = LinearLayoutManager(this@RoomActivity,LinearLayoutManager.HORIZONTAL,false)
@@ -73,19 +75,21 @@ class RoomActivity : AppCompatActivity() {
         connectStomp()
         stompClient.send("/pub/room/enter", userDataWithRoomId.toString()).subscribe()
         binding.roomChatSendButton.setOnClickListener {
-            val data = JSONObject()
-            data.put("message", binding.roomChatEditText.text.toString())
-            val userJson = JSONObject()
-            userJson.put("userToken", auth.currentUser?.uid)
-            userJson.put("nickname", auth?.currentUser?.displayName!!)
-            userJson.put("profileImg", auth.currentUser?.photoUrl!!.toString())
-            userJson.put("userId", user.userId)
-            userJson.put("isOnline", 1)
-            data.put("user", userJson)
-            data.put("roomId", "${roomId}")
-            data.put("messageType", MessageTypeEnum.USER_CHAT)
-            stompClient.send("/pub/chat/message", data.toString()).subscribe()
-            binding.roomChatEditText.setText("")
+            if(!binding.roomChatEditText.text.equals("")){
+                val data = JSONObject()
+                data.put("message", binding.roomChatEditText.text.toString())
+                val userJson = JSONObject()
+                userJson.put("userToken", auth.currentUser?.uid)
+                userJson.put("nickname", auth?.currentUser?.displayName!!)
+                userJson.put("profileImg", auth.currentUser?.photoUrl!!.toString())
+                userJson.put("userId", user.userId)
+                userJson.put("isOnline", 1)
+                data.put("user", userJson)
+                data.put("roomId", "${roomId}")
+                data.put("messageType", MessageTypeEnum.USER_CHAT)
+                stompClient.send("/pub/chat/message", data.toString()).subscribe()
+                binding.roomChatEditText.setText("")
+            }
         }
         binding.drawClearAll.setOnClickListener {
             binding.draw.clear()
@@ -144,6 +148,36 @@ class RoomActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    override fun onBackPressed() {
+        showDialogExit()
+    }
+    fun showDialogExit(){
+        var builder = android.app.AlertDialog.Builder(this, androidx.appcompat.R.style.AlertDialog_AppCompat)
+        var view = LayoutInflater.from(this).inflate(R.layout.dialog_game_exit,findViewById(R.id.dialog_exit))
+        builder.setView(view)
+        val alertDialog = builder.create()
+        val display = (getSystemService(Context.WINDOW_SERVICE) as WindowManager).defaultDisplay
+        var point = Point()
+        display.getSize(point)
+        var pointWidth = (point.x * 0.7).toInt()
+        var pointHeight = (point.y * 0.2).toInt()
+
+        view.findViewById<AppCompatButton>(R.id.alert_exit_cancle_btn).setOnClickListener {
+            alertDialog.dismiss()
+        }
+        view.findViewById<AppCompatButton>(R.id.alert_exit_ok_btn).setOnClickListener {
+            finish()
+            alertDialog.dismiss()
+        }
+        alertDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        alertDialog.window!!.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+        alertDialog.setCancelable(false)
+        alertDialog.window!!.attributes.width = pointWidth
+        alertDialog.window!!.attributes.height = pointHeight
+        alertDialog.show()
+
     }
 
     override fun onResume() {
@@ -295,6 +329,7 @@ class RoomActivity : AppCompatActivity() {
             Log.d(TAG, "onCreate: ${topicMessage.payload}")
             val message = Gson().fromJson(topicMessage.payload, Message::class.java)
             list.add(message)
+
             runOnUiThread {
                 binding.roomChatRecyclerView.adapter = ChatAdapter(list.toList())
                 binding.roomChatRecyclerView.scrollToPosition(list.size-1)

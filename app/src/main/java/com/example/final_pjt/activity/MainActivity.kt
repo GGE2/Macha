@@ -7,12 +7,10 @@ import android.graphics.Color
 import android.graphics.Point
 import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
-import android.graphics.drawable.PaintDrawable
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.WindowManager
@@ -21,8 +19,6 @@ import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatCheckBox
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.databinding.BindingAdapter
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -40,7 +36,6 @@ import com.google.firebase.auth.FirebaseAuth
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.create
 import com.example.final_pjt.util.ApplicationClass.Companion.sharedPreferencesUtil
 import com.example.final_pjt.viewmodel.RoomViewModel
 
@@ -195,8 +190,8 @@ class MainActivity : AppCompatActivity(){
         val display = (getSystemService(Context.WINDOW_SERVICE) as WindowManager).defaultDisplay
         var point = Point()
         display.getSize(point)
-        var pointWidth = (point.x * 0.7).toInt()
-        var pointHeight = (point.y * 0.2).toInt()
+        var pointWidth = (point.x * 0.9).toInt()
+        var pointHeight = (point.y * 0.4).toInt()
 
         view.findViewById<AppCompatButton>(R.id.error_no_enter_room_btn).setOnClickListener {
             alertDialog.dismiss()
@@ -297,11 +292,11 @@ class MainActivity : AppCompatActivity(){
         }
 
 
-        view.findViewById<AppCompatButton>(R.id.alert_cancle_btn).setOnClickListener {
+        view.findViewById<AppCompatButton>(R.id.alert_exit_cancle_btn).setOnClickListener {
             alertDialog.dismiss()
         }
 
-        view.findViewById<AppCompatButton>(R.id.alert_ok_btn).setOnClickListener {
+        view.findViewById<AppCompatButton>(R.id.alert_exit_ok_btn).setOnClickListener {
             var room = Room(sharedPreferencesUtil.getUser(),roomName.text.toString(),nowTime_checked?.text!!.split("초")[0].toInt(),now_checked?.text!!.split("명")[0].toInt())
             Log.d(TAG, "showDialog: ${room.toString()}")
             /**

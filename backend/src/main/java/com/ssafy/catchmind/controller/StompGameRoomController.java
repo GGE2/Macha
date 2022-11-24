@@ -6,6 +6,7 @@ import com.ssafy.catchmind.model.RoomStatusEnum;
 import com.ssafy.catchmind.model.dto.*;
 import com.ssafy.catchmind.model.service.RoomService;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,7 @@ public class StompGameRoomController {
             "사슴", "이어폰", "스티브 잡스", "프라이팬", "도깨비"
     };
 
+    private final HashMap<String, TimerThread> threadMap = new HashMap<>();
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final SimpMessagingTemplate template; //특정 Broker로 메세지를 전달
 
@@ -112,23 +114,10 @@ public class StompGameRoomController {
 //            template.convertAndSend("/sub/chat-room/" + roomId, chatMessage);
 //        }
 
-        Thread timer = new Thread(() -> {
-            int time = gameRoomDTO.getGameTime();
-            template.convertAndSend("/sub/game-room/timer/" + gameRoomDTO.getRoomId(), time);
-            while(time > 0) {
-                try {
-                    Thread.sleep(1000);
-                    time--;
-                    template.convertAndSend("/sub/game-room/timer/" + gameRoomDTO.getRoomId(), time);
-                    //logger.info("timer : " + time);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+        TimerThread timerThread = new TimerThread(gameRoomDTO.getGameTime(), gameRoomDTO.getRoomId(), gameRoomDTO.getRoundCnt());
+        timerThread.start();
 
-        timer.start();
-
+        threadMap.put(gameRoomDTO.getRoomId(), timerThread);
         gameRoomDTO.setStatus(GameStatusEnum.START_ROUND);
         gameRoomDTO.setRoomStatus(RoomStatusEnum.PROCEEDING);
         //
@@ -187,13 +176,48 @@ public class StompGameRoomController {
             gameRoomDTO.setNowDrawer("");
             Collections.sort(gameResultDTOList);
             gameRoomDTO.setScoreMap(null);
+            threadMap.get(gameRoomDTO.getRoomId()).stop();
             template.convertAndSend("/sub/game-room/end/" + gameRoomDTO.getRoomId(), gameResultDTOList);
             template.convertAndSend("/sub/game-room/" + gameRoomDTO.getRoomId(), gameRoomDTO);
             template.convertAndSend("/sub/canvas/clear/" + roomId, "CANVAS_CLEAR");
         } else {
-
+            threadMap.get(gameRoomDTO.getRoomId()).stop();
             template.convertAndSend("/sub/canvas/clear/" + roomId, "CANVAS_CLEAR");
             roundStart(roomId);
         }
     }
+
+    private class TimerThread extends Thread{
+        int gameTime = 0;
+        String roomId;
+        Integer roundCnt = 0;
+        public TimerThread(int gameTime, String roomId, Integer roundCnt) {
+            this.gameTime = gameTime;
+            this.roomId = roomId;
+            this.roundCnt = roundCnt;
+        }
+
+        @SneakyThrows
+        @Override
+        public void run() {
+            int time = gameTime;
+            super.run();
+            if (roundCnt == 0) {
+                Thread.sleep(1800);
+            }  else {
+                Thread.sleep(900);
+            }
+            template.convertAndSend("/sub/game-room/timer/" + roomId, time);
+            while(time > 0) {
+                try {
+                    Thread.sleep(1000);
+                    time--;
+                    template.convertAndSend("/sub/game-room/timer/" + roomId, time);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
 }
+

@@ -36,7 +36,6 @@ public class StompChatController {
             message.setMessage(message.getUser().getNickname() + "님이 정답을 맞췄습니다!!!");
             template.convertAndSend("/sub/game/status/" + message.getRoomId(), RoomStatusEnum.ANSWER);
             logger.info("/chat/message answer : " + gameRoomDTO);
-
             template.convertAndSend("/sub/chat-room/" + message.getRoomId(), message);
         } else {
             message.setMessageType(MessageTypeEnum.USER_CHAT);

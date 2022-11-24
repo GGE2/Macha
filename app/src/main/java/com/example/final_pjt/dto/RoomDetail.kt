@@ -11,10 +11,11 @@ data class RoomDetail(
     var status : GameStatusEnum,
     var maxNumOfPeople : Int,
     var gameTime : Int,
+    var roundCnt : Int,
     var roomStatus : RoomStatusEnum,
     var answer : String
 ):java.io.Serializable{
     override fun toString(): String {
-        return "RoomDetail(userSet=$userSet, roomId='$roomId', roomMaster='$roomMaster', roomName='$roomName', nowDrawer='$nowDrawer', numOfPeople=$numOfPeople, status='$status', maxNumOfPerople=$maxNumOfPeople)"
+        return "RoomDetail(userSet=$userSet, roomId='$roomId', roomMaster='$roomMaster', roomName='$roomName', nowDrawer='$nowDrawer', numOfPeople=$numOfPeople, status=$status, maxNumOfPeople=$maxNumOfPeople, gameTime=$gameTime, roundCnt=$roundCnt, roomStatus=$roomStatus, answer='$answer')"
     }
 }

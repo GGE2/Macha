@@ -31,6 +31,10 @@ import com.example.final_pjt.util.ApplicationClass.Companion.sharedPreferencesUt
 import com.google.firebase.auth.FirebaseAuth
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.json.JSONObject
 import ua.naiksoftware.stomp.Stomp
 import ua.naiksoftware.stomp.dto.LifecycleEvent
@@ -373,6 +377,59 @@ class RoomActivity : AppCompatActivity() {
             roomDetail = Gson().fromJson(topicMessage.payload, RoomDetail::class.java)
             runOnUiThread {
                 if(roomDetail!!.status == GameStatusEnum.START_ROUND){
+                    if(roomDetail!!.roundCnt == 1){
+                        CoroutineScope(Dispatchers.Main).launch{
+                            runOnUiThread {
+                                Glide.with(this@RoomActivity).load(R.raw.start_game).override(500, 500).into(binding.animation)
+                                binding.animation.visibility = View.VISIBLE
+                            }
+                            delay(900)
+                            runOnUiThread {
+                                binding.animation.visibility = View.GONE
+                            }
+                            runOnUiThread {
+                                Glide.with(this@RoomActivity).load(R.raw.round_1).override(1000, 1000).into(binding.animation)
+                                binding.animation.visibility = View.VISIBLE
+                            }
+                            delay(900)
+                            runOnUiThread {
+                                binding.animation.visibility = View.GONE
+                            }
+                        }
+                    } else if(roomDetail!!.roundCnt == 2){
+                        CoroutineScope(Dispatchers.Main).launch{
+                            runOnUiThread {
+                                Glide.with(this@RoomActivity).load(R.raw.round_2).override(1000, 1000).into(binding.animation)
+                                binding.animation.visibility = View.VISIBLE
+                            }
+                            delay(900)
+                            runOnUiThread {
+                                binding.animation.visibility = View.GONE
+                            }
+                        }
+                    } else if(roomDetail!!.roundCnt == 3){
+                        CoroutineScope(Dispatchers.Main).launch{
+                            runOnUiThread {
+                                Glide.with(this@RoomActivity).load(R.raw.round_3).override(1000, 1000).into(binding.animation)
+                                binding.animation.visibility = View.VISIBLE
+                            }
+                            delay(900)
+                            runOnUiThread {
+                                binding.animation.visibility = View.GONE
+                            }
+                        }
+                    } else if(roomDetail!!.roundCnt == 4){
+                        CoroutineScope(Dispatchers.Main).launch{
+                            runOnUiThread {
+                                Glide.with(this@RoomActivity).load(R.raw.round_4).override(1000, 1000).into(binding.animation)
+                                binding.animation.visibility = View.VISIBLE
+                            }
+                            delay(900)
+                            runOnUiThread {
+                                binding.animation.visibility = View.GONE
+                            }
+                        }
+                    }
                     binding.roomTimerText.visibility = View.VISIBLE
                     binding.roomTimerImage.visibility = View.VISIBLE
                     if(roomDetail!!.nowDrawer == user.userToken){

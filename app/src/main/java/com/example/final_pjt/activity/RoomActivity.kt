@@ -377,6 +377,7 @@ class RoomActivity : AppCompatActivity() {
             roomDetail = Gson().fromJson(topicMessage.payload, RoomDetail::class.java)
             runOnUiThread {
                 if(roomDetail!!.status == GameStatusEnum.START_ROUND){
+                    binding.roomTimerText.text = roomDetail!!.gameTime.toString()
                     if(roomDetail!!.roundCnt == 1){
                         CoroutineScope(Dispatchers.Main).launch{
                             runOnUiThread {

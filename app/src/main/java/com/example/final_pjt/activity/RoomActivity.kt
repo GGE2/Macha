@@ -312,6 +312,9 @@ class RoomActivity : AppCompatActivity() {
         val alertDialog = builder.create()
         alertDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         alertDialog.show()
+        dialogBinding.alertResultOkBtn.setOnClickListener {
+            alertDialog.dismiss()
+        }
     }
 
     fun connectStomp(){

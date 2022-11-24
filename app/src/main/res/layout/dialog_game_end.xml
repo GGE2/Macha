@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/alert_radius_white"
     android:orientation="vertical"
@@ -10,7 +10,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/resultLayout"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toTopOf="@+id/alert_result_ok_btn"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -126,11 +126,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
             android:fontFamily="@font/do_hyeon"
             android:text="닉네임"
             app:layout_constraintBottom_toTopOf="@+id/user_2_name"
-            app:layout_constraintEnd_toStartOf="@+id/user_1_score"
             app:layout_constraintStart_toEndOf="@+id/user_1_img"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -139,11 +137,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
             android:fontFamily="@font/do_hyeon"
             android:text="닉네임"
             app:layout_constraintBottom_toTopOf="@+id/user_3_name"
-            app:layout_constraintEnd_toStartOf="@+id/user_2_score"
             app:layout_constraintStart_toEndOf="@+id/user_2_img"
             app:layout_constraintTop_toBottomOf="@+id/user_1_name" />
 
@@ -152,11 +148,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
             android:fontFamily="@font/do_hyeon"
             android:text="닉네임"
             app:layout_constraintBottom_toTopOf="@+id/user_4_name"
-            app:layout_constraintEnd_toStartOf="@+id/user_3_score"
             app:layout_constraintStart_toEndOf="@+id/user_3_img"
             app:layout_constraintTop_toBottomOf="@+id/user_2_name" />
 
@@ -165,64 +159,54 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
             android:fontFamily="@font/do_hyeon"
             android:text="닉네임"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/user_4_score"
             app:layout_constraintStart_toEndOf="@+id/user_4_img"
             app:layout_constraintTop_toBottomOf="@+id/user_3_name" />
 
         <TextView
             android:id="@+id/user_1_score"
-            android:layout_width="26dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             android:fontFamily="@font/do_hyeon"
             android:text="점수"
             app:layout_constraintBottom_toTopOf="@+id/user_2_score"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/user_1_name"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/user_2_score"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             android:fontFamily="@font/do_hyeon"
             android:text="점수"
             app:layout_constraintBottom_toTopOf="@+id/user_3_score"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/user_2_name"
             app:layout_constraintTop_toBottomOf="@+id/user_1_score" />
 
         <TextView
             android:id="@+id/user_3_score"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             android:fontFamily="@font/do_hyeon"
             android:text="점수"
             app:layout_constraintBottom_toTopOf="@+id/user_4_score"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/user_3_name"
             app:layout_constraintTop_toBottomOf="@+id/user_2_score" />
 
         <TextView
             android:id="@+id/user_4_score"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             android:fontFamily="@font/do_hyeon"
             android:text="점수"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/user_4_name"
             app:layout_constraintTop_toBottomOf="@+id/user_3_score" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -231,6 +215,7 @@
         android:id="@+id/alert_result_ok_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:background="@drawable/alert_btn_radius"
         android:fontFamily="@font/do_hyeon"
         android:text="확인"

@@ -116,7 +116,7 @@ class RoomActivity : AppCompatActivity() {
             binding.drawColorBlue.visibility = View.VISIBLE
         }
         binding.drawEraser.setOnClickListener {
-            binding.draw.currentColor = Color.WHITE
+            binding.draw.currentColor = Color.rgb(143,128,116)
             binding.draw.currentWidth = 50F
             binding.draw.paint.strokeCap = Paint.Cap.ROUND
             binding.drawColorBlack.visibility = View.GONE
